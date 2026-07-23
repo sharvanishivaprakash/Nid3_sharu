@@ -1,29 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Just here bro</title>
+let customFont;
+let deepVoid = '#0B0B1A'; // Dark, bruised background
+let neonYellow = '#E6FF00'; // High contrast, electric yellow
+let white = '#FFFFFF';
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+function preload() {
+  // Loading a stable coding font for the pixelated/terminal look. 
+  // If you download a specific pixel font like 'Press Start 2P', 
+  // you can place it in your VS Code folder and use loadFont('YourFont.ttf');
+  customFont = loadFont('https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceCodePro-Bold.otf'); 
+}
 
-  <meta name="author" content="Your name">
-  <meta name="description" content="Brief description">
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  
+  if (customFont) {
+    textFont(customFont);
+  } else {
+    textFont('monospace');
+  }
+}
 
-  <meta property="og:title" content="Just here bro">
-  <meta property="og:description" content="Brief description">
-  <meta property="og:image" content="/some-image.png">
-  <meta property="og:url" content="/this-page.html">
-  <meta property="og:site_name" content="Your Site Name">
+function draw() {
+  // 1. Deep Void Background
+  background(deepVoid);
+  
+  // 2. Draw the Text Layout
+  push();
+  // Moving the text block away from the very edge of the screen
+  translate(80, 120); 
+  
+  // BIG TITLE
+  fill(neonYellow);
+  textSize(80);
+  text("DATA VIZ", 0, 0);
+  
+  // SUBTITLE
+  fill(white);
+  textSize(28);
+  text("mochidoes was here", 5, 60);
+  
+  // BODY DESCRIPTION
+  fill(white);
+  textSize(16);
+  textLeading(26); // Adds nice breathing room between the lines of text
+  text("just a girl , chilling in data viz , surviving sem Ixd\n[ps- coding is coding bro]", 5, 120);
+  
+  pop();
+}
 
-  <link href="style.css" rel="stylesheet">
-
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-</head>
-
-<body>
-
-  <h1>Your content here!</h1>
-
-  <script src="script.js"></script>
-</body>
-</html>
+// Ensures the canvas resizes if you change your browser window size
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
