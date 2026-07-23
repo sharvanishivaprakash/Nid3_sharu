@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>DATA VIZ | Mochi</title>
     
-    <!-- Pulling in Pixel and Coding Fonts from Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
@@ -15,7 +14,6 @@
         margin: 0;
         padding: 0;
         overflow: hidden;
-        /* Default gradient fallback */
         background: linear-gradient(135deg, #1A0833 0%, #4D1A4D 50%, #9B3D69 100%);
       }
 
@@ -38,7 +36,6 @@
         createCanvas(windowWidth, windowHeight);
         noStroke();
         
-        // Scatter stars across the screen
         for(let i = 0; i < 70; i++) {
           stars.push({
             x: random(0, width), 
@@ -51,64 +48,51 @@
           });
         }
 
-        // Set up the two clouds near the moon
-        // offset relative to the moon's center, scale, float speed, float starting point, and opacity
         moonClouds.push({ xOffset: -120, yOffset: 40, scale: 1.8, floatSpeed: 0.015, floatOffset: 0, opacity: 160 });
         moonClouds.push({ xOffset: 80, yOffset: -50, scale: 1.2, floatSpeed: 0.02, floatOffset: PI, opacity: 120 });
       }
 
       function draw() {
-        // clear() makes the canvas transparent so the CSS background shows through
         clear();
         
-        // --- INTERACTION 1: DYNAMIC GRADIENT ---
         let gradAngle = map(mouseX, 0, width, 110, 160);
         let midStop = map(mouseY, 0, height, 40, 60);
         document.body.style.background = `linear-gradient(${gradAngle}deg, #1A0833 0%, #4D1A4D ${midStop}%, #9B3D69 100%)`;
         
         drawStars();
         
-        // --- INTERACTION 2: PARALLAX DEPTH (Moon & Clouds) ---
         let moonBaseX = width * 0.8;
         let moonBaseY = height * 0.25;
         let moonOffsetX = map(mouseX, 0, width, 15, -15);
         let moonOffsetY = map(mouseY, 0, height, 15, -15);
         
-        // Draw the clouds behind or around the moon
         for (let c of moonClouds) {
-          // Math sine wave to make the clouds gently bob up and down
           let floatY = sin(frameCount * c.floatSpeed + c.floatOffset) * 15;
-          // Clouds move slightly faster than the moon to give a layered 3D effect
           let cloudX = moonBaseX + c.xOffset + (moonOffsetX * 1.3);
           let cloudY = moonBaseY + c.yOffset + floatY + (moonOffsetY * 1.3);
           
           drawPixelCloud(cloudX, cloudY, c.scale, c.opacity);
         }
 
-        // Draw Moon (Scale increased to 2.8 to make it bigger)
         drawPixelMoon(moonBaseX + moonOffsetX, moonBaseY + moonOffsetY, 2.8); 
         
         push();
-        // The text moves slightly opposite to the cursor, but at a different speed than the moon
         let textOffsetX = map(mouseX, 0, width, -8, 8);
         let textOffsetY = map(mouseY, 0, height, -8, 8);
         translate(80 + textOffsetX, 120 + textOffsetY);
 
-        // --- BIG TITLE ---
         fill(titleColor);
         textFont('Press Start 2P'); 
         textStyle(NORMAL);
         textSize(55); 
         text('DATA VIZ', 0, 0);
 
-        // --- SUBTITLE ---
         fill(subtitleColor);
         textFont('Space Mono');
         textStyle(ITALIC); 
         textSize(22); 
         text('MochiDoes was here', 5, 60);
 
-        // --- BODY DESCRIPTION ---
         fill(whiteText);
         textFont('Space Mono'); 
         textStyle(NORMAL); 
@@ -116,13 +100,14 @@
         textLeading(26);
         text('just a girl , chilling in data viz , surviving sem3 Ixd\n[ps- coding is coding bro]', 5, 120);
 
+        // --- CHILLING PIXEL GIRL ---
+        drawChillingGirl(10, 220, 4.5); 
+
         pop();
       }
 
       function drawStars() {
         for (let star of stars) {
-          
-          // --- INTERACTION 3: REPELLING STARS ---
           let distanceToMouse = dist(mouseX, mouseY, star.x, star.y);
           let interactionRadius = 120; 
           
@@ -148,7 +133,6 @@
         scale(scaleMult);
         fill(255, 255, 255, alphaVal);
         
-        // Pixel art map for the cloud
         let cloudMap = [
           "     XXXXX    ",
           "   XXXXXXXXX  ",
@@ -199,9 +183,86 @@
         pop();
       }
 
+      function drawChillingGirl(x, y, scaleMult) {
+        push();
+        translate(x, y);
+        scale(scaleMult);
+        noStroke();
+
+        let p = 4; 
+
+        // Shirt 
+        fill('#5C3A21');
+        rect(3*p, 10*p, 8*p, 6*p);
+        
+        // Jeans
+        fill('#5A7C9A');
+        rect(3*p, 16*p, 8*p, 3*p);
+
+        // Arms 
+        fill('#5C3A21');
+        rect(2*p, 10*p, 2*p, 5*p); 
+        rect(10*p, 10*p, 2*p, 5*p); 
+        
+        // Hands
+        fill('#FFD3B6');
+        rect(2.5*p, 15*p, 1.5*p, 1.5*p); 
+        rect(10*p, 15*p, 1.5*p, 1.5*p); 
+
+        // Laptop 
+        fill('#999999');
+        rect(4*p, 12*p, 6*p, 4.5*p); 
+        fill('#00F0FF');
+        rect(4.5*p, 12.5*p, 5*p, 3*p); 
+        fill('#777777');
+        rect(3.5*p, 16.5*p, 7*p, 1.5*p); 
+
+        // Head Animation
+        let nodY = sin(frameCount * 0.06) * 1.5; 
+        translate(0, nodY);
+
+        // Neck
+        fill('#FFD3B6');
+        rect(6*p, 9*p, 2*p, 2*p);
+
+        // Hair Back
+        fill('#3A1F0D');
+        rect(2*p, 2*p, 10*p, 9*p);
+
+        // Face
+        fill('#FFD3B6');
+        rect(4*p, 4*p, 6*p, 5*p);
+
+        // Hair Front 
+        fill('#3A1F0D');
+        rect(3*p, 2*p, 8*p, 2*p); 
+        rect(3*p, 4*p, 1.5*p, 4*p); 
+        rect(9.5*p, 4*p, 1.5*p, 4*p); 
+
+        // Eyes
+        fill('#000000');
+        rect(5*p, 6*p, 1*p, 1*p);
+        rect(8*p, 6*p, 1*p, 1*p);
+
+        // Blush
+        fill('#FFAAA5');
+        rect(4*p, 7*p, 1*p, 1*p);
+        rect(9*p, 7*p, 1*p, 1*p);
+
+        // Headphones 
+        fill('#FFFFFF');
+        rect(1*p, 4*p, 2*p, 4*p); 
+        rect(11*p, 4*p, 2*p, 4*p); 
+        fill('#DDDDDD');
+        rect(2*p, 1*p, 10*p, 1.5*p); 
+        rect(1*p, 2*p, 2*p, 2*p); 
+        rect(11*p, 2*p, 2*p, 2*p); 
+
+        pop();
+      }
+
       function windowResized() {
         resizeCanvas(windowWidth, windowHeight);
-        // Recalculate star base positions on resize
         for (let star of stars) {
           star.baseX = random(0, width);
           star.baseY = random(0, height);
