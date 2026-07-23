@@ -1,252 +1,265 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Mochi Does</title>
-    <style>
-      html, body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background: #2E0854;
-      }
+let customFont;
+let deepPurple = '#2E0854';
+let black = '#000000';
+let gamingBlue = '#00F0FF';
+let neonPink = '#FF003C';
+let grey = '#CCCCCC';
+let white = '#FFFFFF';
 
-      canvas {
-        display: block;
-      }
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.13/lib/p5.min.js"></script>
-  </head>
-  <body>
-    <script>
-      let deepPurple = '#2E0854';
-      let black = '#000000';
-      let gamingBlue = '#00F0FF';
-      let neonPink = '#FF003C';
-      let grey = '#CCCCCC';
-      let white = '#FFFFFF';
+let dinoX, dinoY;
+let targetX, targetY;
+let dinoYLimit;
 
-      let dinoX, dinoY;
-      let targetX, targetY;
-      let dinoYLimit;
+let clouds = [];
+let moon;
 
-      let clouds = [];
-      let moon;
+let boxInfo = [
+  { name: 'FOOD' },
+  { name: 'MUSIC' },
+  { name: 'ATHLEISURE' }
+];
 
-      let boxInfo = [
-        { name: 'FOOD' },
-        { name: 'MUSIC' },
-        { name: 'ATHLEISURE' }
-      ];
+function preload() {
+  // Using a very stable, CORS-friendly URL for a monospace coding font to prevent crashes.
+  // If you download a specific pixel font like 'Press Start 2P', you can upload it to the 
+  // p5 editor files and change this to loadFont('YourFontFile.ttf');
+  customFont = loadFont('https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceCodePro-Bold.otf'); 
+}
 
-      function setup() {
-        createCanvas(windowWidth, windowHeight);
-        textFont('monospace');
-        noCursor();
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  
+  // Apply the font if it loaded correctly, otherwise default to monospace
+  if (customFont) {
+    textFont(customFont);
+  } else {
+    textFont('monospace');
+  }
+  
+  noCursor(); // Hides the default cursor for our custom pixel one
+  
+  dinoX = width / 2;
+  dinoY = height / 2;
+  targetX = dinoX;
+  targetY = dinoY;
+  
+  // Background elements setup
+  moon = { x: width * 0.85, y: height * 0.15, size: 60 };
+  dinoYLimit = height * 0.65; // The dinosaur won't go below this vertical line
 
-        dinoX = width / 2;
-        dinoY = height / 2;
-        targetX = dinoX;
-        targetY = dinoY;
+  // Generate some clouds
+  for (let i = 0; i < 4; i++) {
+    clouds.push({
+      x: random(0, width),
+      y: height * 0.05 + (i * height * 0.08),
+      cloudScale: random(1.5, 2.5),
+      speed: random(0.2, 0.6)
+    });
+  }
+}
 
-        moon = { x: width * 0.9, y: height * 0.1, size: 80 };
-        dinoYLimit = height * 0.65;
+function draw() {
+  background(deepPurple);
+  
+  // 1. Draw Night Sky and Moon
+  drawMoon();
+  drawClouds();
+  
+  // 2. Draw Interactive Character (Dino)
+  updateAndDrawDino();
+  
+  // 3. Draw Text Hierarchy
+  drawInfoText();
+  
+  // 4. Draw Interactive Option Boxes
+  drawInteractiveBoxes();
+  
+  // 5. Custom Pixelated Cursor (Drawn last so it stays on top)
+  drawPixelCursor();
+}
 
-        for (let i = 0; i < 3; i++) {
-          clouds.push({
-            x: width + random(100, 400),
-            y: height * 0.15 + i * height * 0.1,
-            size: random(1.5, 3),
-            speed: random(0.2, 0.5)
-          });
-        }
-      }
+function drawMoon() {
+  push();
+  noStroke();
+  fill(white);
+  rect(moon.x, moon.y, moon.size, moon.size, 5); // Pixelated moon shape
+  fill('#E0E0E0');
+  // Simple pixel craters
+  rect(moon.x + moon.size * 0.2, moon.y + moon.size * 0.3, moon.size * 0.15, moon.size * 0.15);
+  rect(moon.x + moon.size * 0.6, moon.y + moon.size * 0.6, moon.size * 0.15, moon.size * 0.15);
+  rect(moon.x + moon.size * 0.7, moon.y + moon.size * 0.2, moon.size * 0.1, moon.size * 0.1);
+  pop();
+}
 
-      function draw() {
-        background(deepPurple);
-        drawMoon();
-        drawClouds();
-        updateAndDrawDino();
-        drawInfoText();
-        drawInteractiveBoxes();
-        drawPixelCursor();
-      }
+function drawClouds() {
+  push();
+  noStroke();
+  fill(255, 255, 255, 40); // Semitransparent white for clouds
+  for (let cloud of clouds) {
+    cloud.x -= cloud.speed; // Move left
+    // If cloud goes off screen, reset it to the right
+    if (cloud.x + (cloud.cloudScale * 100) < 0) {
+      cloud.x = width + random(50, 200);
+    }
+    drawPixelCloud(cloud.x, cloud.y, cloud.cloudScale); 
+  }
+  pop();
+}
 
-      function drawMoon() {
-        push();
-        noStroke();
-        fill(white);
-        rect(moon.x, moon.y, moon.size, moon.size, 10);
-        fill('#E0E0E0');
-        rect(moon.x + moon.size * 0.2, moon.y + moon.size * 0.3, moon.size * 0.1, moon.size * 0.1, 2);
-        rect(moon.x + moon.size * 0.5, moon.y + moon.size * 0.5, moon.size * 0.1, moon.size * 0.1, 2);
-        rect(moon.x + moon.size * 0.7, moon.y + moon.size * 0.2, moon.size * 0.1, moon.size * 0.1, 2);
-        pop();
-      }
+function drawPixelCloud(x, y, cScale) {
+  push();
+  translate(x, y);
+  scale(cScale); 
+  rect(0, 0, 40, 20);
+  rect(10, -10, 30, 20);
+  rect(20, -20, 20, 20);
+  rect(-10, -10, 10, 10);
+  pop();
+}
 
-      function drawClouds() {
-        push();
-        noStroke();
-        fill(grey + '66');
-        for (let cloud of clouds) {
-          cloud.x -= cloud.speed;
-          if (cloud.x + cloud.size * 100 < 0) {
-            cloud.x = width + random(50, 200);
-          }
-          drawPixelCloud(cloud.x, cloud.y, cloud.size);
-        }
-        pop();
-      }
+function updateAndDrawDino() {
+  targetX = mouseX;
+  targetY = mouseY;
+  
+  // Constrain the dinosaur so it stays in the top section
+  let currentTargetY = min(targetY, dinoYLimit - 60);
+  
+  // Smoothly move the dinosaur towards the cursor
+  dinoX = lerp(dinoX, targetX, 0.06);
+  dinoY = lerp(dinoY, currentTargetY, 0.06);
+  
+  push();
+  translate(dinoX - 30, dinoY - 40); 
+  
+  // Pixel Dino 
+  fill(black);
+  noStroke();
+  rect(0, 0, 40, 30); // Body
+  rect(10, -20, 30, 20); // Head
+  
+  fill(white);
+  rect(15, -15, 8, 8); // Eye
+  fill(black);
+  rect(18, -12, 3, 3); // Pupil
+  
+  // Spikes
+  rect(5, -25, 5, 5); 
+  rect(15, -30, 5, 5);
+  rect(25, -25, 5, 5);
+  
+  // Feet
+  rect(5, 30, 10, 15); 
+  rect(25, 30, 10, 15);
+  
+  // Laptop on back
+  fill(grey);
+  rect(5, -15, 20, 15); // Laptop base
+  fill(gamingBlue);
+  rect(8, -12, 14, 9); // Screen glow
+  
+  // Pencil
+  fill('#E1B07A'); // Wood color
+  rect(40, 10, 4, 15);
+  fill(black);
+  rect(40, 25, 4, 3); // Pencil tip
+  
+  pop();
+}
 
-      function drawPixelCloud(x, y, scale) {
-        push();
-        translate(x, y);
-        scale(scale);
-        rect(0, 0, 40, 20);
-        rect(10, -10, 30, 20);
-        rect(20, -20, 20, 20);
-        rect(-10, -10, 10, 10);
-        pop();
-      }
+function drawInfoText() {
+  push();
+  translate(80, 100);
+  
+  // 1. Main Title (Huge)
+  fill(white);
+  textSize(70);
+  text("DATA VIZ", 0, 0);
+  
+  // 2. Subtitle 1 (Small)
+  fill(gamingBlue);
+  textSize(16);
+  text("SEM 3 IxD, NID Bengaluru", 5, 40);
+  
+  // 3. Subtitle 2 (Medium, Pink)
+  fill(neonPink);
+  textSize(28);
+  text("Mochi does is here", 5, 110);
+  
+  // 4. Description (Small)
+  fill(white);
+  textSize(16);
+  textLeading(26); // Space between lines
+  text("Just a girl slaying here data viz module ;}\n[ps- Crying in coding* ]", 5, 160);
+  
+  pop();
+}
 
-      function updateAndDrawDino() {
-        targetX = mouseX;
-        targetY = mouseY;
+function drawInteractiveBoxes() {
+  push();
+  let totalGap = 40;
+  let boxWidth = (width - 160 - (totalGap * 2)) / 3;
+  let boxHeight = 120;
+  let boxY = height - boxHeight - 60; // Keep it near the bottom
+  
+  for (let i = 0; i < boxInfo.length; i++) {
+    let box = boxInfo[i];
+    let boxX = 80 + i * (boxWidth + totalGap);
+    
+    // Check for hover
+    let isHovering = mouseX > boxX && mouseX < boxX + boxWidth && mouseY > boxY && mouseY < boxY + boxHeight;
+    
+    // Draw Box Outline
+    strokeWeight(4);
+    if (isHovering) {
+      stroke(gamingBlue);
+      fill(black);
+    } else {
+      stroke(grey);
+      noFill();
+    }
+    rect(boxX, boxY, boxWidth, boxHeight, 0); // Sharp pixel corners
+    
+    // Draw Crossed Arrow Icon (Top Left Corner)
+    push();
+    translate(boxX + 20, boxY + 20);
+    strokeWeight(3);
+    if (isHovering) {
+      stroke(neonPink);
+    } else {
+      stroke(grey);
+    }
+    line(0, 0, 15, 15);
+    line(0, 15, 15, 0);
+    pop();
+    
+    // Draw Text Label in Center
+    noStroke();
+    if (isHovering) {
+      fill(white);
+    } else {
+      fill(grey);
+    }
+    textSize(20);
+    textAlign(CENTER, CENTER);
+    text(box.name, boxX + boxWidth / 2, boxY + boxHeight / 2);
+  }
+  pop();
+}
 
-        let currentTargetY = min(targetY, dinoYLimit - 60);
-        dinoX = lerp(dinoX, targetX, 0.05);
-        dinoY = lerp(dinoY, currentTargetY, 0.05);
+function drawPixelCursor() {
+  push();
+  noFill();
+  stroke(neonPink); 
+  strokeWeight(3);
+  rect(mouseX - 6, mouseY - 6, 12, 12);
+  line(mouseX, mouseY - 10, mouseX, mouseY + 10);
+  line(mouseX - 10, mouseY, mouseX + 10, mouseY);
+  pop();
+}
 
-        push();
-        translate(dinoX - 40, dinoY - 60);
-        fill(black);
-        noStroke();
-        rect(0, 0, 60, 40);
-        rect(10, -20, 40, 20);
-        fill(white);
-        rect(20, -10, 10, 10);
-        fill(black);
-        rect(25, -5, 2, 2);
-        rect(10, -30, 5, 10);
-        rect(20, -35, 5, 10);
-        rect(30, -30, 5, 10);
-        rect(5, 30, 15, 30);
-        rect(40, 30, 15, 30);
-
-        fill(grey);
-        rect(10, -20, 25, 20);
-        fill(white);
-        rect(15, -15, 15, 10);
-        fill(gamingBlue);
-        rect(16, -14, 13, 8);
-
-        fill('#E1B07A');
-        rect(50, 10, 5, 15);
-        fill(black);
-        rect(50, 25, 5, 2);
-        pop();
-      }
-
-      function drawInfoText() {
-        push();
-        noFill();
-        stroke(gamingBlue + '33');
-        rect(20, 20, width - 40, dinoYLimit - 20, 5);
-
-        translate(100, 100);
-        fill(black);
-
-        textSize(80);
-        text('DATA VIZ', 0, 0);
-
-        textSize(16);
-        text('SEM 3 IxD, NID Bengaluru', 10, 120);
-
-        textSize(24);
-        fill(neonPink);
-        text('Mochi does is here', 10, 170);
-
-        fill(black);
-        textSize(18);
-        let descText = 'Just a girl slaying here data viz module ;}\n[ps- Crying in coding* ]';
-        textLeading(30);
-        text(descText, 10, 220);
-        pop();
-      }
-
-      function drawInteractiveBoxes() {
-        push();
-        let boxWidth = (width - 200) / 3;
-        let boxHeight = height * 0.2;
-        let boxY = height - boxHeight - 50;
-        let gap = 20;
-
-        for (let i = 0; i < boxInfo.length; i++) {
-          let box = boxInfo[i];
-          let boxX = 100 + i * (boxWidth + gap);
-          let isHovering = mouseX > boxX && mouseX < boxX + boxWidth && mouseY > boxY && mouseY < boxY + boxHeight;
-
-          strokeWeight(4);
-          if (isHovering) {
-            stroke(gamingBlue);
-            fill(black);
-          } else {
-            stroke(gamingBlue + 'aa');
-            noFill();
-          }
-          rect(boxX, boxY, boxWidth, boxHeight, 10);
-
-          push();
-          translate(boxX + 20, boxY + 20);
-          scale(1.5);
-          strokeWeight(3);
-          if (isHovering) {
-            stroke(white);
-          } else {
-            stroke(grey);
-          }
-          drawCrossedArrow();
-          pop();
-
-          noStroke();
-          if (isHovering) {
-            fill(white);
-          } else {
-            fill(white + '99');
-          }
-          textSize(18);
-          textAlign(CENTER, CENTER);
-          text(box.name, boxX + boxWidth / 2, boxY + boxHeight / 2);
-        }
-        pop();
-      }
-
-      function drawCrossedArrow() {
-        line(0, 0, 20, 20);
-        line(0, 20, 20, 0);
-      }
-
-      function drawPixelCursor() {
-        push();
-        noFill();
-        stroke(white);
-        strokeWeight(2);
-        rect(mouseX - 5, mouseY - 5, 10, 10);
-        line(mouseX, mouseY - 5, mouseX, mouseY + 5);
-        line(mouseX - 5, mouseY, mouseX + 5, mouseY);
-        pop();
-      }
-
-      function windowResized() {
-        resizeCanvas(windowWidth, windowHeight);
-        dinoYLimit = height * 0.65;
-        moon.x = width * 0.9;
-        moon.y = height * 0.1;
-        for (let i = 0; i < clouds.length; i++) {
-          clouds[i].x = width + random(100, 400);
-        }
-      }
-    </script>
-  </body>
-</html>
+// Ensure the canvas scales perfectly if the window changes size
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  dinoYLimit = height * 0.65;
+  moon.x = width * 0.85;
+}
