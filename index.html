@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>DATA VIZ | Mochi</title>
     
+    <!-- Pulling in Pixel, Editorial, and Coding Fonts from Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&family=Press+Start+2P&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 
     <style>
       html, body {
@@ -55,10 +56,12 @@
       function draw() {
         clear();
         
+        // --- INTERACTION 1: DYNAMIC GRADIENT ---
         let gradAngle = map(mouseX, 0, width, 110, 160);
         let midStop = map(mouseY, 0, height, 40, 60);
         document.body.style.background = `linear-gradient(${gradAngle}deg, #1A0833 0%, #4D1A4D ${midStop}%, #9B3D69 100%)`;
         
+        // --- INTERACTIVE ENVIRONMENT (Moving) ---
         drawStars();
         
         let moonBaseX = width * 0.8;
@@ -76,32 +79,49 @@
 
         drawPixelMoon(moonBaseX + moonOffsetX, moonBaseY + moonOffsetY, 2.8); 
         
+        // --- STATIC UI LAYER (Not Moving) ---
         push();
-        let textOffsetX = map(mouseX, 0, width, -8, 8);
-        let textOffsetY = map(mouseY, 0, height, -8, 8);
-        translate(80 + textOffsetX, 120 + textOffsetY);
+        
+        // Responsive margins based on screen width
+        let marginX = width < 768 ? 30 : 80;
+        let marginY = width < 768 ? 80 : 120;
+        translate(marginX, marginY);
 
+        // --- BIG TITLE (Mixed Typography) ---
+        let bigTitleSize = width < 768 ? 45 : 75; // Responsive font sizing
+        
         fill(titleColor);
         textFont('Press Start 2P'); 
         textStyle(NORMAL);
-        textSize(55); 
-        text('DATA VIZ', 0, 0);
+        textSize(bigTitleSize); 
+        text('DATA ', 0, 0);
+        
+        // Calculate where the word "DATA " ends so we know where to place "VIZ"
+        let dataWidth = textWidth('DATA ');
+        
+        textFont('Playfair Display');
+        textStyle(ITALIC);
+        textSize(bigTitleSize * 1.3); // Editorial fonts need to be scaled up slightly to match pixel fonts
+        text('VIZ', dataWidth, 0);
 
+        // --- SUBTITLE ---
         fill(subtitleColor);
         textFont('Space Mono');
         textStyle(ITALIC); 
         textSize(22); 
         text('MochiDoes was here', 5, 60);
 
+        // --- BODY DESCRIPTION ---
         fill(whiteText);
         textFont('Space Mono'); 
         textStyle(NORMAL); 
-        textSize(16);
+        let descSize = width < 768 ? 14 : 16;
+        textSize(descSize);
         textLeading(26);
         text('just a girl , chilling in data viz , surviving sem3 Ixd\n[ps- coding is coding bro]', 5, 120);
 
-        // --- CHILLING PIXEL GIRL ---
-        drawChillingGirl(10, 220, 4.5); 
+        // --- CHILLING PIXEL GIRL (Head & Laptop Only) ---
+        drawChillingGirl(10, 200, 4.5); 
 
         pop();
       }
@@ -191,35 +211,17 @@
 
         let p = 4; 
 
-        // Shirt 
-        fill('#5C3A21');
-        rect(3*p, 10*p, 8*p, 6*p);
-        
-        // Jeans
-        fill('#5A7C9A');
-        rect(3*p, 16*p, 8*p, 3*p);
-
-        // Arms 
-        fill('#5C3A21');
-        rect(2*p, 10*p, 2*p, 5*p); 
-        rect(10*p, 10*p, 2*p, 5*p); 
-        
-        // Hands
-        fill('#FFD3B6');
-        rect(2.5*p, 15*p, 1.5*p, 1.5*p); 
-        rect(10*p, 15*p, 1.5*p, 1.5*p); 
-
-        // Laptop 
+        // --- LAPTOP (Base) ---
         fill('#999999');
-        rect(4*p, 12*p, 6*p, 4.5*p); 
-        fill('#00F0FF');
-        rect(4.5*p, 12.5*p, 5*p, 3*p); 
+        rect(3*p, 10*p, 6*p, 4.5*p); 
+        fill('#00F0FF'); // Screen Glow
+        rect(3.5*p, 10.5*p, 5*p, 3*p); 
         fill('#777777');
-        rect(3.5*p, 16.5*p, 7*p, 1.5*p); 
+        rect(2.5*p, 14.5*p, 7*p, 1.5*p); 
 
-        // Head Animation
+        // --- HEAD (Floating and Nodding above the laptop) ---
         let nodY = sin(frameCount * 0.06) * 1.5; 
-        translate(0, nodY);
+        translate(-0.5*p, -1*p + nodY);
 
         // Neck
         fill('#FFD3B6');
@@ -263,6 +265,7 @@
 
       function windowResized() {
         resizeCanvas(windowWidth, windowHeight);
+        // Recalculate stars so they fill the screen on resize
         for (let star of stars) {
           star.baseX = random(0, width);
           star.baseY = random(0, height);
