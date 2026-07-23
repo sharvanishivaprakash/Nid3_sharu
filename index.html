@@ -15,7 +15,7 @@
         margin: 0;
         padding: 0;
         overflow: hidden;
-        /* Chill minimal gaming purplish-pinkish gradient */
+        /* Default gradient fallback */
         background: linear-gradient(135deg, #1A0833 0%, #4D1A4D 50%, #9B3D69 100%);
       }
 
@@ -28,39 +28,71 @@
   <body>
     <script>
       let titleColor = '#E6FF00';     
-      let subtitleColor = '#FFB3FF';  // Softened the pink so it vibes with the gradient
+      let subtitleColor = '#FFB3FF';  
       let whiteText = '#E0E0FF';      
       
       let stars = [];
+      let moonClouds = [];
 
       function setup() {
         createCanvas(windowWidth, windowHeight);
         noStroke();
         
-        // Generate stars scattered mostly on the right side of the screen
-        for(let i = 0; i < 40; i++) {
+        // Scatter stars across the screen
+        for(let i = 0; i < 70; i++) {
           stars.push({
-            x: random(width * 0.4, width), // Starts from 40% across the screen
+            x: random(0, width), 
             y: random(0, height),
-            size: random(2, 4),
+            baseX: random(0, width), 
+            baseY: random(0, height), 
+            size: random(2, 4.5),
             twinkleSpeed: random(0.02, 0.05),
             offset: random(0, TWO_PI)
           });
         }
+
+        // Set up the two clouds near the moon
+        // offset relative to the moon's center, scale, float speed, float starting point, and opacity
+        moonClouds.push({ xOffset: -120, yOffset: 40, scale: 1.8, floatSpeed: 0.015, floatOffset: 0, opacity: 160 });
+        moonClouds.push({ xOffset: 80, yOffset: -50, scale: 1.2, floatSpeed: 0.02, floatOffset: PI, opacity: 120 });
       }
 
       function draw() {
-        // clear() makes the canvas transparent so the CSS gradient shows through!
+        // clear() makes the canvas transparent so the CSS background shows through
         clear();
+        
+        // --- INTERACTION 1: DYNAMIC GRADIENT ---
+        let gradAngle = map(mouseX, 0, width, 110, 160);
+        let midStop = map(mouseY, 0, height, 40, 60);
+        document.body.style.background = `linear-gradient(${gradAngle}deg, #1A0833 0%, #4D1A4D ${midStop}%, #9B3D69 100%)`;
         
         drawStars();
         
-        // Draw Moon on the right side (responsive to screen width)
-        drawPixelMoon(width * 0.8, height * 0.2, 1.5); 
+        // --- INTERACTION 2: PARALLAX DEPTH (Moon & Clouds) ---
+        let moonBaseX = width * 0.8;
+        let moonBaseY = height * 0.25;
+        let moonOffsetX = map(mouseX, 0, width, 15, -15);
+        let moonOffsetY = map(mouseY, 0, height, 15, -15);
         
-        // Draw the text
+        // Draw the clouds behind or around the moon
+        for (let c of moonClouds) {
+          // Math sine wave to make the clouds gently bob up and down
+          let floatY = sin(frameCount * c.floatSpeed + c.floatOffset) * 15;
+          // Clouds move slightly faster than the moon to give a layered 3D effect
+          let cloudX = moonBaseX + c.xOffset + (moonOffsetX * 1.3);
+          let cloudY = moonBaseY + c.yOffset + floatY + (moonOffsetY * 1.3);
+          
+          drawPixelCloud(cloudX, cloudY, c.scale, c.opacity);
+        }
+
+        // Draw Moon (Scale increased to 2.8 to make it bigger)
+        drawPixelMoon(moonBaseX + moonOffsetX, moonBaseY + moonOffsetY, 2.8); 
+        
         push();
-        translate(80, 120);
+        // The text moves slightly opposite to the cursor, but at a different speed than the moon
+        let textOffsetX = map(mouseX, 0, width, -8, 8);
+        let textOffsetY = map(mouseY, 0, height, -8, 8);
+        translate(80 + textOffsetX, 120 + textOffsetY);
 
         // --- BIG TITLE ---
         fill(titleColor);
@@ -69,17 +101,17 @@
         textSize(55); 
         text('DATA VIZ', 0, 0);
 
-        // --- SUBTITLE (Italics applied) ---
+        // --- SUBTITLE ---
         fill(subtitleColor);
         textFont('Space Mono');
-        textStyle(ITALIC); // Makes the text italic
+        textStyle(ITALIC); 
         textSize(22); 
         text('MochiDoes was here', 5, 60);
 
         // --- BODY DESCRIPTION ---
         fill(whiteText);
         textFont('Space Mono'); 
-        textStyle(NORMAL); // Resets back to normal text
+        textStyle(NORMAL); 
         textSize(16);
         textLeading(26);
         text('just a girl , chilling in data viz , surviving sem3 Ixd\n[ps- coding is coding bro]', 5, 120);
@@ -89,21 +121,59 @@
 
       function drawStars() {
         for (let star of stars) {
-          // Math sine wave to make the stars pulse/twinkle smoothly
+          
+          // --- INTERACTION 3: REPELLING STARS ---
+          let distanceToMouse = dist(mouseX, mouseY, star.x, star.y);
+          let interactionRadius = 120; 
+          
+          if (distanceToMouse < interactionRadius) {
+            let force = map(distanceToMouse, 0, interactionRadius, 6, 0);
+            let angle = atan2(star.y - mouseY, star.x - mouseX);
+            star.x += cos(angle) * force;
+            star.y += sin(angle) * force;
+          } else {
+            star.x = lerp(star.x, star.baseX, 0.05);
+            star.y = lerp(star.y, star.baseY, 0.05);
+          }
+
           let alpha = map(sin(frameCount * star.twinkleSpeed + star.offset), -1, 1, 50, 255);
           fill(255, 255, 255, alpha);
           rect(star.x, star.y, star.size, star.size);
         }
       }
 
+      function drawPixelCloud(x, y, scaleMult, alphaVal) {
+        push();
+        translate(x, y);
+        scale(scaleMult);
+        fill(255, 255, 255, alphaVal);
+        
+        // Pixel art map for the cloud
+        let cloudMap = [
+          "     XXXXX    ",
+          "   XXXXXXXXX  ",
+          " XXXXXXXXXXXX ",
+          "XXXXXXXXXXXXXX",
+          " XXXXXXXXXXXX "
+        ];
+        
+        let pixelSize = 6;
+        for(let row = 0; row < cloudMap.length; row++) {
+          for(let col = 0; col < cloudMap[row].length; col++) {
+            if (cloudMap[row].charAt(col) === 'X') {
+              rect(col * pixelSize, row * pixelSize, pixelSize, pixelSize);
+            }
+          }
+        }
+        pop();
+      }
+
       function drawPixelMoon(x, y, scaleMult) {
         push();
         translate(x, y);
         scale(scaleMult);
-        fill('#FFFDD0'); // Pale, aesthetic yellow/white
+        fill('#FFFDD0'); 
         
-        // A simple text-based map for drawing pixel art!
-        // X = filled block, space = empty
         let moonPixels = [
           "   XXXX ",
           "  XXXXX ",
@@ -131,6 +201,11 @@
 
       function windowResized() {
         resizeCanvas(windowWidth, windowHeight);
+        // Recalculate star base positions on resize
+        for (let star of stars) {
+          star.baseX = random(0, width);
+          star.baseY = random(0, height);
+        }
       }
     </script>
   </body>
