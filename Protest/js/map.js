@@ -154,9 +154,9 @@ if(protest.Country === "Sri Lanka"){
     .attr("class", "protest-dot")
     .attr("cx", d => d.x)
     .attr("cy", d => d.y)
-    .attr("r", 3)
+    .attr("r", 4.5)
     .attr("fill", "#ff4b4b")
-    .attr("opacity", 0)
+    .attr("opacity", 1)
     .style("pointer-events","all")
     
     .on("click", function(event,d){
@@ -164,7 +164,7 @@ if(protest.Country === "Sri Lanka"){
     console.log("DOT CLICKED", d);
 
 })
-    .on("mouseenter", function(event, d){
+    .on("mouseover", function(event,d){
 
     console.log("DOT HOVER");
 
@@ -228,12 +228,12 @@ if(protest.Country === "Sri Lanka"){
     })
 
 
-    .on("mouseleave", function(){
+    .on("mouseout", function(){
 
         d3.select(this)
             .transition()
             .duration(200)
-            .attr("r",3)
+            .attr("r",4.5)
             .attr("fill","#ff4b4b");
 
 
@@ -245,7 +245,7 @@ if(protest.Country === "Sri Lanka"){
 
 console.log("Countries:", world.features.length);
 console.log("Protests:", protests.length);
-console.log("Matched points:", protestPoints.length);
+console.log("Matched points:", window.protestPoints.length);
         /* ===================================================
            DOTS
            =================================================== */
@@ -259,68 +259,14 @@ console.log("Matched points:", protestPoints.length);
 console.log("initializeMap closed");
 
 
-function activateMap(){
-
-    if(!mapReady) return;
-
-    if(!mapGroup) return;
-
-
-    mapGroup
-        .transition()
-        .duration(700)
-        .attr("opacity",1);
-
-}
 
 /* ===========================================================
    ACTIVATE
    =========================================================== */
 
-function animateParticlesToMap(App){
-
-    if(!introDots.length) return;
-
-    if(!window.protestPoints.length) {
-        console.log("No map points yet");
-        return;
-    }
 
 
-    introDots.forEach((dot,i)=>{
-
-
-        const target = window.protestPoints[i % window.protestPoints.length];
-
-        console.log(i, target);
-
-
-        gsap.killTweensOf(dot.node());
-
-
-        gsap.to(dot.node(),{
-
-            attr:{
-                cx: target.x,
-                cy: target.y
-            },
-
-            opacity:1,
-
-            duration:2,
-
-            delay:i*0.01,
-
-            ease:"power3.inOut"
-
-        });
-
-        mapReady = true;
-
-
-    });
-
-}
+    
 
 /* ===========================================================
    ACTIVATE MAP
@@ -333,30 +279,17 @@ function activateMap(){
     if(!mapGroup) return;
 
 
-    gsap.to(mapGroup.node(),{
-
-    opacity:1,
-
-    duration:0.8
-
+    gsap.set(mapGroup.node(),{
+    opacity:1
 });
     const dots = mapGroup.selectAll(".protest-dot");
 
 
-    gsap.fromTo(
-        dots.nodes(),
-        {
-            scale:0,
-            opacity:0,
-            transformOrigin:"center center"
-        },
-        {
-            scale:1,
-            opacity:1,
-            duration:0.8,
-            stagger:0.01,
-            ease:"back.out(2)"
-        }
-    );
-
+    dots
+    .attr("opacity",0)
+    .transition()
+    .duration(600)
+    .delay((d,i)=>i*10)
+    .attr("opacity",1)
+    .attr("r",4);
 }

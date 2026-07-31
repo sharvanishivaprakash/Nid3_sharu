@@ -5,7 +5,6 @@
 #visualization{
 
     position:fixed;
-
     top:0;
     left:0;
 
@@ -16,7 +15,7 @@
 
     z-index:1;
 
-    pointer-events:none;
+    pointer-events:auto;
 
 }
 
@@ -224,4 +223,15 @@
 
     }
 
+}
+.scene{
+    pointer-events:none;
+}
+
+.story-panel{
+    pointer-events:auto;
+}
+
+.graphic-space{
+    pointer-events:none;
 }

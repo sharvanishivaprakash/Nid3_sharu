@@ -89,11 +89,6 @@ function createSceneGroups() {
             .attr("id", "case-layer")
             .style("opacity", 0);
             
-            App.layers.ending =
-    App.svg.append("g")
-        .attr("id", "ending-layer")
-        .style("opacity", 0);
-            
 
 }
 
@@ -110,11 +105,11 @@ function initializeVisuals() {
 
     initializeMap(App);
 
-    initializeMotivation(App);
+initializeMotivation(App);
 
-    initializeSuccess(App);
+initializeSuccess(App);
 
-initializeEnding(App);
+initializeCaseStudy(App);
 
 createIntroParticles(App);
 
@@ -204,12 +199,17 @@ function showIntro() {
 
 function showMap(){
 
-    fadeLayers(App.layers.map);
+    animateParticlesToMap(App);
 
-    activateMap();
+    setTimeout(()=>{
+
+        fadeLayers(App.layers.map);
+
+        activateMap();
+
+    },1800);
 
 }
-
 
 /* ===========================================================
    MOTIVATION
@@ -243,44 +243,15 @@ function showSuccess() {
    CASE STUDY
 =========================================================== */
 
-/* ===========================================================
-   CASE STUDY
-=========================================================== */
-
-/* ===========================================================
-   CASE STUDY
-=========================================================== */
-
 function showCaseStudy(){
 
-
-    // first activate the travelling Sri Lanka dot
-    activateCaseStudy();
-
-
-    // show case study layer
     fadeLayers(App.layers.caseStudy);
 
-
-    gsap.to(
-        App.layers.caseStudy.node(),
-        {
-            opacity:1,
-            duration:0.8
-        }
-    );
+    if(window.sriLankaSuccessDot){
+        activateCaseStudy();
+    }
 
 }
-
-function showEnding(){
-
-    fadeLayers(App.layers.ending);
-
-    activateEnding();
-
-}
-
-
 
 /* ===========================================================
    SCENE DETECTION
@@ -330,10 +301,7 @@ function updateScene() {
             showCaseStudy();
             break;
 
-            case "scene-ending":
-    showEnding();
-    break;
-
+            
     }
 
 }

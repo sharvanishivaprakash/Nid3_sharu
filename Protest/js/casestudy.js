@@ -5,6 +5,8 @@
 
 "use strict";
 
+gsap.registerPlugin(ScrollTrigger);
+
 let caseStartPoint;
 let caseGroup;
 let caseTitle;
@@ -34,38 +36,7 @@ function initializeCaseStudy(App){
         Title
     */
 
-    caseTitle = caseGroup
-        .append("text")
-        .attr("x",App.width/2)
-        .attr("y",App.height*0.35)
-        .attr("text-anchor","middle")
-        .attr("fill","white")
-        .attr("font-size",48)
-        .attr("font-family","Inter")
-        .attr("opacity",0)
-        .text("Sri Lanka");
-
-
-
-    /*
-        Subtitle
-    */
-
-    caseSubtitle = caseGroup
-        .append("text")
-        .attr("x",App.width/2)
-        .attr("y",App.height*0.42)
-        .attr("text-anchor","middle")
-        .attr("fill","#E63946")
-        .attr("font-size",24)
-        .attr("font-family","Inter")
-        .attr("opacity",0)
-        .text("The Movement That Forced A Political Change");
-
-gsap.registerPlugin(ScrollTrigger);
-
-activateCaseScroll();
-
+    
 }
 
 
@@ -143,36 +114,14 @@ function activateCaseStudy(){
     });
 
 
-    // reveal title
-
-    gsap.to(caseTitle.node(),{
-
-        opacity:1,
-
-        delay:3,
-
-        duration:0.8
-
-    });
-
-
-
-    gsap.to(caseSubtitle.node(),{
-
-        opacity:1,
-
-        delay:3.2,
-
-        duration:0.8
-
-    });
+    
 
 
 }
 function activateCaseScroll(){
 
 
-    gsap.utils.toArray(".case-block, .case-final")
+    gsap.utils.toArray(".case-block")
     .forEach(block=>{
 
 

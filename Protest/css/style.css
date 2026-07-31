@@ -82,10 +82,12 @@ body{
 
 /* SVG INTERACTION FIX */
 
-.scene,
-.graphic-space,
-.story-panel{
+.graphic-space{
     pointer-events:none;
+}
+
+.story-panel{
+    pointer-events:auto;
 }
 
 
@@ -185,13 +187,6 @@ body{
     width:250px;
     display:block;
     margin:auto;
-
-}
-.case-block,
-.case-final{
-
-    opacity:1;
-    transform:none;
 
 }
 
@@ -294,4 +289,20 @@ body{
 
     border-radius:16px;
 
+}
+.scene{
+    pointer-events:none;
+}
+
+.story-panel{
+    pointer-events:auto;
+}
+
+#visualization{
+    pointer-events:auto;
+    z-index:10;
+}
+
+#viz-svg{
+    pointer-events:auto;
 }
