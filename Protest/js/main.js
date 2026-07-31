@@ -63,23 +63,21 @@ function createSceneGroups() {
 
     App.layers.intro =
         App.svg.append("g")
-            .attr("id", "intro-layer")
-            .style("pointer-events", "none");
-
-    App.layers.introParticles =
-        App.svg.append("g")
-            .attr("id", "intro-particles-layer")
-            .style("pointer-events", "none");
+            .attr("id", "intro-layer");
+            
+            App.layers.introParticles =
+    App.svg.append("g")
+        .attr("id", "intro-particles-layer");
 
     App.layers.map =
         App.svg.append("g")
             .attr("id", "map-layer")
-            .attr("opacity", 0);
+            .style("opacity", 0);
 
     App.layers.motivation =
         App.svg.append("g")
             .attr("id", "motivation-layer")
-            .attr("opacity", 0);
+            .style("opacity", 0);
 
     App.layers.success =
         App.svg.append("g")
@@ -90,6 +88,12 @@ function createSceneGroups() {
         App.svg.append("g")
             .attr("id", "case-layer")
             .style("opacity", 0);
+            
+            App.layers.ending =
+    App.svg.append("g")
+        .attr("id", "ending-layer")
+        .style("opacity", 0);
+            
 
 }
 
@@ -110,7 +114,7 @@ function initializeVisuals() {
 
     initializeSuccess(App);
 
-initializeCaseStudy(App);
+initializeEnding(App);
 
 createIntroParticles(App);
 
@@ -200,21 +204,12 @@ function showIntro() {
 
 function showMap(){
 
-    // keep intro particles visible
-    animateParticlesToMap(App);
+    fadeLayers(App.layers.map);
 
-
-    // wait for particle movement
-    setTimeout(()=>{
-
-        fadeLayers(App.layers.map);
-
-        activateMap();
-
-
-    },1800);
+    activateMap();
 
 }
+
 
 /* ===========================================================
    MOTIVATION
@@ -248,15 +243,42 @@ function showSuccess() {
    CASE STUDY
 =========================================================== */
 
-function showCaseStudy() {
+/* ===========================================================
+   CASE STUDY
+=========================================================== */
 
+/* ===========================================================
+   CASE STUDY
+=========================================================== */
+
+function showCaseStudy(){
+
+
+    // first activate the travelling Sri Lanka dot
+    activateCaseStudy();
+
+
+    // show case study layer
     fadeLayers(App.layers.caseStudy);
 
-    activateCaseStudy();
+
+    gsap.to(
+        App.layers.caseStudy.node(),
+        {
+            opacity:1,
+            duration:0.8
+        }
+    );
 
 }
 
-   
+function showEnding(){
+
+    fadeLayers(App.layers.ending);
+
+    activateEnding();
+
+}
 
 
 
@@ -308,6 +330,10 @@ function updateScene() {
             showCaseStudy();
             break;
 
+            case "scene-ending":
+    showEnding();
+    break;
+
     }
 
 }
@@ -320,8 +346,6 @@ function updateScene() {
 window.addEventListener("scroll", updateScene);
 
 window.addEventListener("resize", () => {
-
-    initializeVisuals();
 
     setTimeout(() => {
 

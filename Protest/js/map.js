@@ -106,8 +106,8 @@ function initializeMap(App) {
         /* ===================================================
            PROTEST POINTS
            =================================================== */
-
         window.protestPoints = [];
+        window.sriLankaMapPoint = null;
 
         protests.forEach(protest => {
 
@@ -117,13 +117,13 @@ function initializeMap(App) {
 
             );
 
-            window.protestPoints = window.protestPoints.slice(0,117);
+    
 
             if (!country) return;
 
             const centroid = path.centroid(country);
 
-            window.protestPoints.push({
+            const point = {
 
     x: centroid[0],
 
@@ -131,7 +131,18 @@ function initializeMap(App) {
 
     protest
 
-});
+};
+
+
+window.protestPoints.push(point);
+
+
+// Save Sri Lanka position
+if(protest.Country === "Sri Lanka"){
+
+    window.sriLankaMapPoint = point;
+
+}
 
         });
 
@@ -143,9 +154,9 @@ function initializeMap(App) {
     .attr("class", "protest-dot")
     .attr("cx", d => d.x)
     .attr("cy", d => d.y)
-    .attr("r", 10)
+    .attr("r", 3)
     .attr("fill", "#ff4b4b")
-    .attr("opacity", 1)
+    .attr("opacity", 0)
     .style("pointer-events","all")
     
     .on("click", function(event,d){

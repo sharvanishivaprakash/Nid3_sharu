@@ -7,7 +7,6 @@
 
 let caseStartPoint;
 let caseGroup;
-let sriLankaDot;
 let caseTitle;
 let caseSubtitle;
 
@@ -28,15 +27,6 @@ function initializeCaseStudy(App){
     /*
         Main Sri Lanka transition dot
     */
-
-    sriLankaDot = caseGroup
-        .append("circle")
-        .attr("class","sri-lanka-dot")
-        .attr("cx",App.width/2)
-        .attr("cy",App.height/2)
-        .attr("r",15)
-        .attr("fill","#E63946")
-        .attr("opacity",0);
 
 
 
@@ -72,6 +62,9 @@ function initializeCaseStudy(App){
         .attr("opacity",0)
         .text("The Movement That Forced A Political Change");
 
+gsap.registerPlugin(ScrollTrigger);
+
+activateCaseScroll();
 
 }
 
@@ -83,90 +76,82 @@ function initializeCaseStudy(App){
 
 function activateCaseStudy(){
 
+    if(!window.sriLankaSuccessDot){
 
-    if(!caseGroup) return;
+        console.log("Sri Lanka dot not found");
+        return;
+
+    }
 
 
-    gsap.to(caseGroup.node(),{
+    const dot = window.sriLankaSuccessDot;
 
-        opacity:1,
 
-        duration:0.5
+    // move dot above other SVG elements
+    dot.parentNode.appendChild(dot);
+
+
+    // enlarge first
+    gsap.to(dot,{
+
+        attr:{
+            r:18
+        },
+
+        duration:0.8,
+        ease:"power2.out"
 
     });
 
 
 
-    // Start from Sri Lanka map position
+    // travel into case study position
+    gsap.to(dot,{
 
-    if(window.sriLankaMapPoint){
+        attr:{
 
+            cx: window.innerWidth * 0.75,
+            cy: window.innerHeight * 0.45
 
-        sriLankaDot
-            .attr(
-                "cx",
-                window.sriLankaMapPoint.x
-            )
-            .attr(
-                "cy",
-                window.sriLankaMapPoint.y
-            )
-            .attr("r",5)
-            .attr("opacity",1);
+        },
 
+        duration:2,
 
+        delay:0.5,
 
-        // Travel to center
+        ease:"power3.inOut"
 
-        gsap.to(
-            sriLankaDot.node(),
-            {
-
-            attr:{
-
-                cx:window.innerWidth/2,
-                cy:window.innerHeight/2
-
-            },
-
-            duration:2,
-
-            ease:"power3.inOut"
-
-        });
+    });
 
 
 
-        // Expand after arriving
+    // become hero red dot
 
-        gsap.to(
-            sriLankaDot.node(),
-            {
+    gsap.to(dot,{
 
-            attr:{
-                r:80
-            },
+        attr:{
+            r:90
+        },
 
-            delay:2,
+        duration:1,
 
-            duration:1,
+        delay:2.3,
 
-            ease:"power2.out"
-
-        });
+        ease:"power2.out"
 
 
-    }
+    });
 
 
+    // reveal title
 
     gsap.to(caseTitle.node(),{
 
         opacity:1,
 
-        delay:2.5,
+        delay:3,
 
-        duration:1
+        duration:0.8
 
     });
 
@@ -176,9 +161,41 @@ function activateCaseStudy(){
 
         opacity:1,
 
-        delay:2.8,
+        delay:3.2,
 
-        duration:1
+        duration:0.8
+
+    });
+
+
+}
+function activateCaseScroll(){
+
+
+    gsap.utils.toArray(".case-block, .case-final")
+    .forEach(block=>{
+
+
+        gsap.to(block,{
+
+            opacity:1,
+
+            y:0,
+
+            duration:1,
+
+            ease:"power3.out",
+
+            scrollTrigger:{
+
+                trigger:block,
+
+                start:"top 80%",
+
+            }
+
+        });
+
 
     });
 

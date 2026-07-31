@@ -8,6 +8,8 @@
 let successGroup;
 let successDots;
 
+window.sriLankaSuccessDot = null;
+
 function initializeSuccess(App) {
 
     successGroup = App.layers.success
@@ -163,6 +165,7 @@ const offsetY = (App.height - chartHeight) / 2 + 80;
             .attr("r", 0)
             .attr("fill", "#E63946")
             .attr("opacity", 0.75)
+
             .on("mouseenter", function(event,d){
 
                 d3.select(this)
@@ -216,6 +219,21 @@ ${d["Outcome Summary"] || "No outcome available"}
 
     d3.select("#tooltip")
         .style("opacity",0);
+
+});
+
+successDots.each(function(d){
+
+    if(d.Country === "Sri Lanka"){
+
+        window.sriLankaSuccessDot = this;
+
+        console.log(
+            "Sri Lanka dot found",
+            d
+        );
+
+    }
 
 });
 
