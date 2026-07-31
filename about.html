@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Table For One</title>
+
+    <!-- Google Fonts -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Source+Serif+4:wght@400;500&family=Inter:wght@400;500;600&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="style.css">
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+</head>
+
+<body>
+
+
+
+<!-- ========================================================= -->
+<div class="opening">
+
+<header class="navbar">
+
+    <div class="logo">
+
+        The Pudding
+
+    </div>
+
+    <button class="menu-btn">
+
+        MENU
+
+    </button>
+
+</header>
+
+
+
+<!-- ========================================================= -->
+
+<section class="hero">
+
+    <div class="hero-inner">
+
+        <h1>
+
+            Table for One
+
+        </h1>
+
+        <p class="subtitle">
+
+            The rise of solo dining and how the people we eat with
+            change throughout our lives.
+
+        </p>
+
+        <p class="author">
+
+            By Your Name
+
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- ========================================================= -->
+
+<section class="intro">
+
+    <div class="article">
+
+        <p>
+
+            Who will you be sharing dinner with tonight? Maybe you've finally worked up the courage to ask your crush out on a date. Or perhaps your evening looks more like a picture-perfect family meal, with smiling children happily finishing their vegetables. Then again, you might simply be sitting down to eat on your own.
+
+        </p>
+
+        <p>
+
+            Before you joke online about being <strong>#ForeverAlone</strong>, it's worth knowing that dining alone has become increasingly common over the years.
+
+        </p>
+
+        <p>
+
+            Back in 2003, the American Time Use Survey found that people ate 32% of their meals alone. As the survey continued over the following years, that figure gradually climbed, reaching 35% by 2015.
+
+        </p>
+
+        <p>
+
+            A small percentage increase might not seem dramatic, but over the course of a month it translates into an additional day spent eating alone. Even more importantly, that increase isn't experienced equally by everyone.
+
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- ========================================================= -->
+
+<section class="transition">
+
+    <div class="transition-text">
+
+        <h2>
+
+            Eating alone changes with age.
+
+        </h2>
+
+        <p>
+
+            Scroll to explore how dining habits shift throughout different stages of life.
+
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- ========================================================= -->
+</div>
+<!-- ========================================================= -->
+<!-- SCROLLY : DINING ALONE -->
+<!-- ========================================================= -->
+
+<section class="scrolly" id="alone-scrolly">
+
+    <!-- Sticky Graphic -->
+
+    <div class="graphic">
+
+        <div class="chart-wrapper">
+
+            <svg id="line-chart"></svg>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Story -->
+
+    <div class="story">
+
+        <article class="story-card active"
+
+                 data-scene="0">
+
+            <span>
+
+                OVERVIEW
+
+            </span>
+
+            <h2>
+
+                Frequency of dining alone by age
+
+            </h2>
+
+            <p>
+
+                Generally speaking, as we get older, we eat alone more and more frequently. But there are a few interesting things worth noting here.
+
+            </p>
+
+        </article>
+
+
+
+        <article class="story-card"
+
+                 data-scene="1">
+
+            <span>
+
+                30-SOMETHING DIP
+
+            </span>
+
+            <h2>
+
+                First, look at the early thirties
+
+            </h2>
+
+            <p>
+
+                First, look at this dip for people in their 30’s. These folks were eating noticeably fewer meals alone per month than people just a decade younger than them.
+
+            </p>
+
+        </article>
+
+
+
+        <article class="story-card"
+
+                 data-scene="2">
+
+            <span>
+
+                70-SOMETHING SOLO DINERS
+
+            </span>
+
+            <h2>
+
+                A steep upward trend
+
+            </h2>
+
+            <p>
+
+                I also noticed that once people hit 70 years old, they experienced a steep upward trend in solitary eating. Though this data is from 2003 and a lot has changed by 2015.
+
+            </p>
+
+        </article>
+
+
+
+        <article class="story-card"
+
+                 data-scene="3">
+
+            <span>
+
+                2015 VS 2003
+
+            </span>
+
+            <h2>
+
+                Two years of data together
+
+            </h2>
+
+            <p>
+
+                Once I added the data from 2015, the patterns really caught my attention. It looks like millennials and baby-boomers finally have something in common. Both groups have begun eating alone more frequently than in 2003.
+
+            </p>
+
+        </article>
+
+
+
+        <article class="story-card"
+
+                 data-scene="4">
+
+            <span>
+
+                AGE GROUPS
+
+            </span>
+
+            <h2>
+
+                The full age-group story
+
+            </h2>
+
+            <p>
+
+                I decided to slice the population into five age groups: 15 - 19, 20 - 30, 30 - 50, 50 - 75, and 75 - 85. These curves seem to follow family life: living with parents, moving out, starting a family, having kids, empty nests, and growing old together.
+
+            </p>
+
+        </article>
+
+    </div>
+
+</section>
+<!-- ========================================================= -->
+<!-- WHO WE EAT WITH -->
+<!-- ========================================================= -->
+
+<section class="companion-intro">
+
+    <div class="article">
+
+        <h2>
+
+            The people around our table change over time.
+
+        </h2>
+
+        <p>
+
+            Childhood dinners are usually shared with parents and siblings. As we grow older, friends become our regular companions before partners and children gradually take their place. Eventually, many people find themselves eating alone more often than they once imagined.
+
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- ========================================================= -->
+<!-- COMPANION SCROLLY -->
+<!-- ========================================================= -->
+
+<section class="companion-scrolly">
+
+    <!-- Sticky Graphic -->
+
+    <div class="graphic companion-graphic">
+
+        <div id="whom-chart">
+
+            <!-- D3 Visualization -->
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Text -->
+
+    <div class="steps companion-steps">
+
+
+
+        <article class="step active"
+                 data-group="parents">
+
+            <div class="step-inner">
+
+                <span>
+
+                    CHILDHOOD
+
+                </span>
+
+                <h3>
+
+                    Parents
+
+                </h3>
+
+                <p>
+
+                    During childhood, most shared meals happen with parents and close family members.
+
+                </p>
+
+            </div>
+
+        </article>
+
+
+
+        <article class="step"
+                 data-group="friends">
+
+            <div class="step-inner">
+
+                <span>
+
+                    YOUNG ADULTHOOD
+
+                </span>
+
+                <h3>
+
+                    Friends
+
+                </h3>
+
+                <p>
+
+                    College, work and social life introduce new people to the dinner table.
+
+                </p>
+
+            </div>
+
+        </article>
+
+
+
+        <article class="step"
+                 data-group="partner">
+
+            <div class="step-inner">
+
+                <span>
+
+                    ADULTHOOD
+
+                </span>
+
+                <h3>
+
+                    Partner
+
+                </h3>
+
+                <p>
+
+                    Meals increasingly become something shared with a spouse or partner.
+
+                </p>
+
+            </div>
+
+        </article>
+
+
+
+        <article class="step"
+                 data-group="children">
+
+            <div class="step-inner">
+
+                <span>
+
+                    FAMILY YEARS
+
+                </span>
+
+                <h3>
+
+                    Children
+
+                </h3>
+
+                <p>
+
+                    Parents often spend years eating with their children almost every day.
+
+                </p>
+
+            </div>
+
+        </article>
+
+
+
+        <article class="step"
+                 data-group="alone">
+
+            <div class="step-inner">
+
+                <span>
+
+                    LATER LIFE
+
+                </span>
+
+                <h3>
+
+                    Alone
+
+                </h3>
+
+                <p>
+
+                    As households become smaller, solitary meals become much more common.
+
+                </p>
+
+            </div>
+
+        </article>
+
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ========================================================= -->
+<!-- FINAL NOTE -->
+<!-- ========================================================= -->
+
+<section class="closing">
+
+    <div class="article narrow">
+
+        <h2>
+
+            Every meal tells a story.
+
+        </h2>
+
+        <p>
+
+            The people sitting across from us are constantly changing throughout our lives. Families grow, friendships evolve, children leave home, and routines shift. Looking at decades of meals together reveals not just eating habits, but the changing shape of our relationships.
+
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- ========================================================= -->
+<!-- FOOTER -->
+<!-- ========================================================= -->
+
+<footer>
+
+    <div class="footer-inner">
+
+        <p>
+
+            Remade for the Information Design course at NID.
+
+        </p>
+
+        <p>
+
+            Built using HTML, CSS, JavaScript and D3.js.
+
+        </p>
+
+    </div>
+
+</footer>
+
+
+
+<!-- ========================================================= -->
+<!-- JAVASCRIPT -->
+<!-- ========================================================= -->
+
+<script src="script.js?v=2"></script>
+
+</body>
+
+</html>

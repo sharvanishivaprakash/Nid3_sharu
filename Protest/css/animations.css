@@ -1,0 +1,17 @@
+.red{
+
+    transition:color .3s ease;
+
+}
+
+.scene{
+
+    transition:opacity .5s ease;
+
+}
+
+h1{
+
+    transition:all .6s ease;
+
+}

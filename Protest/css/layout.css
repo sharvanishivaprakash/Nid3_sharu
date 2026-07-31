@@ -1,0 +1,227 @@
+/* ==========================================================
+   FIXED VISUALIZATION
+========================================================== */
+
+#visualization{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100vw;
+    height:100vh;
+
+    overflow:hidden;
+
+    z-index:1;
+
+    pointer-events:none;
+
+}
+
+#visual-container{
+
+    position:absolute;
+
+    top:0;
+    right:0;
+
+    width:58%;
+    height:100%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+
+/* ==========================================================
+   STORY
+========================================================== */
+
+#story{
+
+    position:relative;
+
+    z-index:10;
+
+}
+
+
+/* ==========================================================
+   INTRO
+========================================================== */
+
+.intro-scene{
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.hero{
+
+    width:900px;
+
+    text-align:center;
+
+}
+
+.hero h1{
+
+    font-size:6rem;
+
+    line-height:0.92;
+
+    font-weight:800;
+
+}
+
+.hero .body{
+
+    margin-top:35px;
+
+    font-size:1.35rem;
+
+    opacity:.75;
+
+}
+
+.hero .eyebrow{
+
+    margin-bottom:25px;
+
+    letter-spacing:6px;
+
+    color:#999;
+
+}
+
+
+/* ==========================================================
+   STORY SECTIONS
+========================================================== */
+
+.split-scene{
+
+    min-height:100vh;
+
+    display:grid;
+
+    grid-template-columns:42% 58%;
+
+    align-items:center;
+
+}
+
+
+/* ==========================================================
+   LEFT PANEL
+========================================================== */
+
+.story-panel{
+
+    padding-left:8vw;
+
+    padding-right:5vw;
+
+    max-width:520px;
+
+}
+
+.step{
+
+    color:#E63946;
+
+    font-size:15px;
+
+    letter-spacing:3px;
+
+    margin-bottom:20px;
+
+}
+
+.story-panel h2{
+
+    font-size:3rem;
+
+    line-height:1.05;
+
+    margin-bottom:25px;
+
+}
+
+.story-panel p{
+
+    font-size:1.15rem;
+
+    line-height:1.8;
+
+    color:#cfcfcf;
+
+}
+
+
+/* ==========================================================
+   RIGHT SIDE
+========================================================== */
+
+.graphic-space{
+
+    width:100%;
+
+    height:100vh;
+
+}
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media(max-width:1000px){
+
+    #visual-container{
+
+        width:100vw;
+
+    }
+
+    .split-scene{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .story-panel{
+
+        margin:auto;
+
+        padding:40px;
+
+        text-align:center;
+
+    }
+
+    .graphic-space{
+
+        display:none;
+
+    }
+
+    .hero h1{
+
+        font-size:4rem;
+
+    }
+
+}

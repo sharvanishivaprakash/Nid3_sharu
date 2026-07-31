@@ -1,0 +1,104 @@
+*{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+
+}
+
+html{
+
+    scroll-behavior:smooth;
+
+}
+
+body{
+
+    background:#050505;
+
+    color:white;
+
+    overflow-x:hidden;
+
+    font-family:Inter,sans-serif;
+
+}
+#intro-particles{
+
+    position:absolute;
+
+    inset:0;
+
+    overflow:hidden;
+
+    pointer-events:none;
+
+    z-index:0;
+
+}
+
+.particle{
+
+    position:absolute;
+
+    border-radius:50%;
+
+    background:#E63946;
+
+    opacity:0;
+
+}
+
+#tooltip{
+
+    position:fixed;
+
+    max-width:260px;
+
+    background:#111;
+
+    color:white;
+
+    border:1px solid #444;
+
+    border-radius:8px;
+
+    padding:12px;
+
+    font-size:12px;
+
+    line-height:1.5;
+
+    pointer-events:none;
+
+    opacity:0;
+
+    transition:opacity .15s;
+
+    z-index:9999;
+
+}
+
+
+/* SVG INTERACTION FIX */
+
+.scene,
+.graphic-space,
+.story-panel{
+    pointer-events:none;
+}
+
+
+#visualization,
+#viz-svg{
+    pointer-events:auto;
+}
+
+
+.protest-dot{
+    pointer-events:all;
+    cursor:pointer;
+}
+#story{
+    pointer-events:none;
+}

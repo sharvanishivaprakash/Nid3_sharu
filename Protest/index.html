@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>When the World Takes to the Streets</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/typography.css">
+    <link rel="stylesheet" href="css/animations.css">
+
+</head>
+
+<body>
+
+<div id="app">
+
+    <!-- =======================================
+         FIXED VISUALIZATION
+    ======================================== -->
+
+    <section id="visualization">
+
+    <div id="intro-particles"></div>
+
+    <div id="visual-container"></div>
+
+</section>
+
+
+    <!-- =======================================
+         STORY
+    ======================================== -->
+
+    <main id="story">
+
+        <!-- ===============================
+             INTRO
+        ================================ -->
+
+        <section class="scene intro-scene" id="scene-intro">
+
+            <div class="hero">
+
+                <p class="eyebrow">
+                    2020 — 2026
+                </p>
+
+                <h1 class="hero-title">
+
+    <span class="line">
+        When the World
+    </span>
+
+    <br>
+
+    <span class="line">
+        Takes to the
+    </span>
+
+    <br>
+
+    <span class="line red">
+        Streets
+    </span>
+
+</h1>
+
+                <p class="body intro-body">
+    Every protest begins with one <span class="accent">voice</span>
+    <span class="divider">•</span>
+    Some become <span class="accent">movements</span>
+    <span class="divider">•</span>
+    Some change <span class="accent">history</span>.
+</p>
+
+<p class="scroll-indicator">
+
+    Scroll to explore
+
+    <span>↓</span>
+
+</p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ===============================
+             MAP
+        ================================ -->
+
+        <section class="scene split-scene" id="scene-map">
+
+            <div class="story-panel">
+
+                <p class="step">
+                    01
+                </p>
+
+                <h2>
+
+                    Where are protests
+
+                    <span class="red">happening?</span>
+
+                </h2>
+
+                <p>
+
+                    Between 2020 and 2026, more than
+                    <span class="red">117 major protests</span>
+                    took place across the world.
+
+                    Each red dot represents one protest.
+
+                    Hover over a dot to learn more.
+
+                </p>
+
+            </div>
+
+            <div class="graphic-space"></div>
+
+        </section>
+
+
+        <!-- ===============================
+             MOTIVATION
+        ================================ -->
+
+        <section class="scene split-scene" id="scene-motivation">
+
+            <div class="story-panel">
+
+                <p class="step">
+                    02
+                </p>
+
+                <h2>
+
+                    Why do people
+
+                    <span class="red">protest?</span>
+
+                </h2>
+
+                <p>
+
+                    Although every movement is unique,
+                    many protests emerge from a few
+                    recurring motivations such as
+                    political freedom, labour rights,
+                    agriculture and economic justice.
+
+                </p>
+
+            </div>
+
+            <div class="graphic-space"></div>
+
+        </section>
+
+
+        <!-- ===============================
+             SUCCESS
+        ================================ -->
+
+        <section class="scene split-scene" id="scene-success">
+
+            <div class="story-panel">
+
+                <p class="step">
+                    03
+                </p>
+
+                <h2>
+
+                    Does a larger crowd
+
+                    <span class="red">mean success?</span>
+
+                </h2>
+
+                <p>
+
+                    Larger crowds don't always lead to
+                    successful outcomes.
+
+                    This chart compares estimated crowd
+                    size with the success score assigned
+                    to each protest.
+
+                </p>
+
+            </div>
+
+            <div class="graphic-space"></div>
+
+        </section>
+
+
+        <!-- ===============================
+             CASE STUDY
+        ================================ -->
+
+        <section class="scene split-scene" id="scene-case">
+
+            <div class="story-panel">
+
+                <p class="step">
+                    04
+                </p>
+
+                <h2>
+
+                    Case Study
+
+                    <span class="red">Sri Lanka</span>
+
+                </h2>
+
+                <p>
+
+                    The Aragalaya movement became one of
+                    the largest public uprisings in recent
+                    history, ultimately leading to the
+                    resignation of the President.
+
+                </p>
+
+            </div>
+
+            <div class="graphic-space"></div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+
+<script src="js/map.js"></script>
+<script src="js/motivation.js"></script>
+<script src="js/success.js"></script>
+<script src="js/caseStudy.js"></script>
+<script src="js/introParticles.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>
