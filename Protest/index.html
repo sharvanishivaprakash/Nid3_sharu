@@ -1,363 +1,770 @@
-<!DOCTYPE html>
-<html lang="en">
+<title>One Voice to a Movement</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Noto+Sans+Gurmukhi:wdth,wght@62.5..100,400..900&family=Palette+Mosaic&display=swap">
+<style>
+/* Layout: sticky full-screen stages inside tall scroll sections; text column left, canvas right; one red reserved for protesters. */
+:root{
+  --ink:#0B0B0B;      /* street */
+  --ink-2:#151515;
+  --grey-1:#2A2A2A;   /* empty ground */
+  --grey-2:#6E6E6E;   /* power / past */
+  --grey-3:#B9B9B9;   /* text secondary */
+  --paper:#EDEDEA;    /* text */
+  --red:#E10600;      /* people */
+  --display:"Bricolage Grotesque","Arial Narrow",sans-serif;
+  --stencil:"Bricolage Grotesque","Arial Narrow",sans-serif;
+  --body:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --pa:"Noto Sans Gurmukhi","Mukta Mahee","Raavi",sans-serif;
+  --mono:"Bricolage Grotesque",system-ui,sans-serif;
+  color-scheme:dark;
+}
+html{background:var(--ink)}
+body{background:var(--ink);color:var(--paper);font-family:var(--body);font-size:17px;line-height:1.55;margin:0}
+*{box-sizing:border-box}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.09;mix-blend-mode:screen;background-size:256px 256px}
+.bar{position:fixed;left:0;top:env(safe-area-inset-top,0px);height:3px;background:var(--red);width:0;z-index:60}
+.chap{position:fixed;right:max(16px,env(safe-area-inset-right,0px));top:calc(10px + env(safe-area-inset-top,0px));font:500 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--grey-2);z-index:60}
+section.scene{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100svh;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(16px,3vw,48px);align-items:center;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:56px 32px;overflow:hidden}
+.copy{min-width:0;max-width:34rem;display:grid;gap:14px;align-content:center}
+.viz{min-width:0;position:relative;height:100%;max-height:calc(100svh - 88px)}
+.viz canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.eyebrow{font:500 12px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--grey-2)}
+.eyebrow b{color:var(--red);font-weight:500}
+h1,h2{font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:.88;margin:0;letter-spacing:.005em;text-wrap:balance}
+h1{font-size:clamp(56px,9vw,132px)}
+h2{font-size:clamp(40px,5.6vw,84px)}
+h1 em,h2 em{font-style:normal;color:var(--red)}
+p{margin:0;max-width:36ch;color:var(--grey-3)}
+p strong{color:var(--paper);font-weight:500}
+.big{font-family:var(--stencil);font-weight:800;font-size:clamp(64px,10vw,150px);line-height:.85;color:var(--paper);font-variant-numeric:tabular-nums}
+.big.red{color:var(--red)}
+.unit{font:500 13px/1.3 var(--mono);color:var(--grey-2);letter-spacing:.06em;text-transform:uppercase}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;border-top:1px solid var(--grey-1);padding-top:12px}
+.stats div{display:grid;gap:2px}
+.stats .n{font-family:var(--stencil);font-weight:800;font-size:clamp(32px,4vw,52px);line-height:.9;font-variant-numeric:tabular-nums}
+.stats .n.red{color:var(--red)}
+.month{font-family:var(--stencil);font-weight:800;font-size:clamp(48px,7vw,104px);line-height:.85;text-transform:uppercase}
+.note{min-height:5.5em;color:var(--paper);max-width:34ch;transition:opacity .25s}
+.ph{position:absolute;left:0;bottom:0;font:400 11px/1.3 var(--mono);color:var(--grey-2);letter-spacing:.06em;border:1px dashed var(--grey-2);padding:5px 8px;background:rgba(11,11,11,.7)}
+.ph b{color:var(--paper);font-weight:500}
+.cred{font:400 11px/1.4 var(--mono);color:var(--grey-2)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font:400 12px/1 var(--mono);color:var(--grey-3)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+/* prologue quote */
+.stage.q{grid-template-columns:minmax(0,1fr);justify-items:start;align-content:center}
+.q figure{margin:0;display:grid;gap:22px;max-width:62rem}
+.q blockquote{margin:0;font-family:var(--pa);font-weight:800;font-stretch:70%;font-size:clamp(44px,7.4vw,120px);line-height:1.12;color:var(--paper)}
+.q blockquote .r{color:var(--red)}
+.q .en{font-family:var(--display);font-weight:500;font-size:clamp(24px,3.2vw,46px);line-height:1.05;text-transform:uppercase;color:var(--paper);max-width:none;opacity:.12;transition:opacity .2s}
+.q figcaption{font:400 12px/1.5 var(--mono);color:var(--grey-2);letter-spacing:.04em;max-width:60ch}
+/* ladder */
+.ladder{list-style:none;margin:0;padding:0;display:grid;gap:6px;align-content:center;height:100%;overflow:auto}
+.rung{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:12px;align-items:center;padding:8px 10px;border-top:1px solid var(--grey-1);opacity:.28;transform:translateX(18px);transition:opacity .45s,transform .45s}
+.rung.on{opacity:1;transform:none}
+.rung .mk{width:22px;height:22px;border-radius:50%;border:2px solid var(--grey-2)}
+.rung[data-s="met"] .mk{background:var(--red);border-color:var(--red)}
+.rung[data-s="part"] .mk{border-color:var(--red);background:radial-gradient(circle,var(--red) 1.6px,transparent 1.9px) 0 0/5px 5px}
+.rung[data-s="no"] .mk{border-color:var(--grey-2)}
+.rung[data-s="check"] .mk{border-style:dashed}
+.rung .t{font-size:15px;line-height:1.3;color:var(--paper)}
+.rung .t small{display:block;font:400 12px/1.35 var(--mono);color:var(--grey-2);margin-top:2px}
+.rung .st{font:500 11px/1 var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--grey-2);white-space:nowrap}
+.rung[data-s="met"] .st,.rung[data-s="part"] .st{color:var(--red)}
+.end{padding-block:18vh 22vh;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:18px;justify-items:start;max-width:62rem;margin:0 auto}
+.end p{max-width:60ch}
+@media (max-width:760px){
+  .stage{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1.15fr) auto;align-items:stretch;padding-block:44px 18px;gap:10px}
+  .viz{order:-1;max-height:none}
+  .copy{gap:8px;align-content:end}
+  .note{min-height:4.2em;font-size:15px}
+  p{font-size:15px}
+  .stats .n{font-size:30px}
+  .hide-s{display:none}
+}
+@media (max-width:760px){.stage.q{grid-template-rows:auto;align-content:center}.q figure{gap:16px}}
+@media (prefers-reduced-motion:reduce){.rung{transition:none}}
+/* ---- full build additions ---- */
+.chap{max-width:60vw;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v{text-decoration:underline dotted var(--grey-2);text-underline-offset:3px}
+.v::after{content:"†";color:var(--grey-2);font-size:.8em;vertical-align:super;margin-left:1px}
+.steps{position:relative;min-height:9.5em}
+.steps>.st{position:absolute;inset:0 0 auto 0;opacity:0;transform:translateY(10px);transition:opacity .35s,transform .35s;display:grid;gap:10px}
+.steps>.st.on{opacity:1;transform:none}
+.steps>.st p{max-width:38ch}
+@media (max-width:760px){.steps{min-height:8.2em}}
 
-<head>
+/* chapter cards */
+.card{min-height:100svh;display:grid;align-content:center;gap:16px;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));max-width:72rem;margin:0 auto}
+.card .num{font-family:var(--stencil);font-weight:800;font-size:clamp(90px,16vw,240px);line-height:.8;color:var(--red)}
+.card h2{font-size:clamp(48px,7.4vw,112px)}
+.card p{max-width:46ch;font-size:19px}
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+/* full-bleed photo scenes */
+.stage.photo{grid-template-columns:minmax(0,1fr);padding:0}
+.stage.photo .viz{position:absolute;inset:0;max-height:none}
+.stage.photo .copy{position:absolute;width:min(34rem,calc(100% - 32px));left:max(16px,env(safe-area-inset-left,0px));bottom:max(28px,env(safe-area-inset-bottom,0px));max-width:min(34rem,calc(100% - 32px));background:linear-gradient(90deg,rgba(11,11,11,.92),rgba(11,11,11,.78));padding:18px 20px 16px;border-left:3px solid var(--red)}
+.stage.photo .copy.r{left:auto;right:max(16px,env(safe-area-inset-right,0px))}
+.stage.photo .copy.t{bottom:auto;top:56px}
+.ill{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:10px;font:400 10px/1.3 var(--mono);color:var(--grey-2);letter-spacing:.05em;text-transform:uppercase;background:rgba(11,11,11,.7);padding:3px 6px}
+.stage.photo .copy.r ~ .ill{bottom:auto;top:30px}
 
-    <title>When the World Takes to the Streets</title>
+/* laws timeline */
+.laws{position:relative;height:100%;display:grid;align-content:center;gap:14px}
+.law{border:1px solid var(--grey-2);background:var(--ink-2);padding:12px 14px 12px 16px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;opacity:0;transform:translateY(-26px);transition:opacity .4s,transform .5s cubic-bezier(.2,1.4,.4,1)}
+.law.on{opacity:1;transform:none}
+.law .d{font-family:var(--stencil);font-weight:800;font-size:28px;line-height:1;color:var(--paper);grid-row:span 2;min-width:4.4ch}
+.law .h{font:500 15px/1.3 var(--body);color:var(--paper)}
+.law .s{font:400 12px/1.4 var(--mono);color:var(--grey-3)}
+.law.vv{border-color:var(--red);box-shadow:0 0 0 1px var(--red)}
+.law.vv .d{color:var(--red)}
+.law.gov{border-style:dashed}
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/layout.css">
-    <link rel="stylesheet" href="css/typography.css">
-    <link rel="stylesheet" href="css/animations.css">
+/* svg charts */
+.viz svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.lbl{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;fill:var(--grey-3)}
+.lbl.r{fill:var(--red)}
+.lbl.big{font:800 22px/1 var(--display);letter-spacing:.02em;fill:var(--paper)}
+.sm{font:400 12px/1.3 var(--body);fill:var(--grey-3)}
+.tip{position:fixed;z-index:70;pointer-events:none;background:var(--ink);border:1px solid var(--grey-2);padding:8px 10px;font:400 12px/1.4 var(--mono);color:var(--grey-3);max-width:260px;opacity:0;transition:opacity .15s}
+.tip b{display:block;color:var(--paper);font:500 14px/1.25 var(--body);margin-bottom:3px}
+.tip i{font-style:normal;color:var(--red)}
 
-</head>
+/* camp + people + precautions grids */
+.grid{display:grid;gap:10px;align-content:center;height:100%}
+.cell{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;align-items:center;padding:8px 10px;border-top:1px solid var(--grey-1);opacity:0;transform:scale(.94);transition:opacity .35s,transform .35s}
+.cell.on{opacity:1;transform:none}
+.cell svg,.cell .stamp{position:static;width:52px;height:44px}
+.cell .stamp{display:grid;place-items:center;border:1px dashed var(--grey-2);font:800 11px/1 var(--display);letter-spacing:.06em;color:var(--grey-3);text-transform:uppercase;text-align:center}
+.cell .t{font:500 15px/1.3 var(--body);color:var(--paper)}
+.cell .t small{display:block;font:400 12px/1.35 var(--mono);color:var(--grey-2);margin-top:2px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.people{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;align-items:end;height:58%}
+.people figure{margin:0;display:grid;gap:6px;justify-items:center;align-content:end;opacity:0;transform:translateY(30px);transition:opacity .4s,transform .5s}
+.people figure.on{opacity:1;transform:none}
+.people svg{position:static;width:100%;height:auto;max-height:34vh}
+.people figcaption{font:500 11px/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--grey-3);text-align:center}
+.others{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 18px;margin-top:18px}
+.others div{font:400 13px/1.35 var(--body);color:var(--grey-3);border-top:1px solid var(--grey-1);padding-top:6px;opacity:0;transition:opacity .4s}
+.others div.on{opacity:1}
+.others b{color:var(--paper);font-weight:500}
 
-<body>
+/* fortress strips */
+.fort{position:relative;height:100%;display:grid;align-content:center;gap:4px}
+.fort .layer{display:grid;grid-template-columns:minmax(0,1fr) 9.5rem;gap:12px;align-items:center;opacity:0;transform:translateY(-40px);transition:opacity .35s,transform .45s cubic-bezier(.3,1.3,.5,1)}
+.fort .layer.on{opacity:1;transform:none}
+.fort .layer svg{position:static;width:100%;height:auto;max-height:13vh}
+.fort .layer span{font:500 11px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--grey-3)}
+.words{position:absolute;inset:0;pointer-events:none}
+.words span{position:absolute;font:800 clamp(18px,2.4vw,34px)/1 var(--stencil);color:var(--grey-2);text-transform:uppercase;opacity:0;transition:opacity .5s,transform 1.2s;white-space:nowrap}
+.words span.on{opacity:.9}
 
-<div id="app">
+/* talks */
+.chip{display:inline-block;font:500 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:4px 6px;border:1px solid var(--grey-2);color:var(--grey-3)}
+.chip.r{border-color:var(--red);color:var(--red)}
 
-    <!-- =======================================
-         FIXED VISUALIZATION
-    ======================================== -->
+/* repeal split */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:12px;border-top:1px solid var(--grey-1);padding-top:12px}
+.split div{display:grid;gap:4px}
+.split .n{font-family:var(--stencil);font-weight:800;font-size:clamp(26px,3vw,40px);line-height:.9}
 
-    <section id="visualization">
+.fn{font:400 12px/1.5 var(--mono);color:var(--grey-2);max-width:72ch}
+.end h3{font:800 22px/1 var(--display);text-transform:uppercase;letter-spacing:.04em;margin:18px 0 0;color:var(--paper)}
+.end ul{margin:0;padding-left:18px;color:var(--grey-3);max-width:72ch;display:grid;gap:4px;font-size:15px}
+.keys{position:fixed;left:max(16px,env(safe-area-inset-left,0px));bottom:10px;font:400 11px/1 var(--mono);color:var(--grey-2);z-index:60;letter-spacing:.06em}
+@media (max-width:760px){
+  .stage.photo .copy{padding:12px 14px;bottom:20px}
+  .people{grid-template-columns:repeat(3,minmax(0,1fr));height:auto}
+  .people svg{max-height:16vh}
+  .others{grid-template-columns:minmax(0,1fr);margin-top:8px}
+  .others div:nth-child(n+4){display:none}
+  .g2{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+  .cell{grid-template-columns:36px minmax(0,1fr);padding:5px 6px;gap:8px}
+  .cell svg,.cell .stamp{width:36px;height:30px}
+  .cell .t{font-size:13px}.cell .t small{display:none}
+  .law{padding:8px 10px}.law .d{font-size:20px}.law .s{display:none}
+  .fort .layer{grid-template-columns:minmax(0,1fr) 6.5rem}
+  .keys{display:none}
+  .card p{font-size:16px}
+}
+@media (prefers-reduced-motion:reduce){.law,.cell,.people figure,.fort .layer,.steps>.st{transition:none}}
 
-    <div id="intro-particles"></div>
+/* ---- v3: opening ---- */
+.stage.open{grid-template-columns:minmax(0,1fr);padding:0}
+.stage.open .viz{position:absolute;inset:0;max-height:none}
+.stage.open .copy{position:absolute;left:max(24px,6vw);top:50%;transform:translateY(-50%);width:min(36rem,40vw);max-width:none}
+.stage.open .steps{min-height:20em}
+.stage.open .ill{right:max(16px,env(safe-area-inset-right,0px))}
+.lead{font:500 clamp(18px,1.6vw,24px)/1.2 var(--body);color:var(--paper);margin-bottom:6px}
+h1.xl{font-size:clamp(56px,6.8vw,124px);line-height:.98;word-spacing:-.4em}
+h1 .o{color:var(--red)}
+@media (max-width:760px){
+  .stage.open .copy{left:16px;right:16px;top:auto;bottom:max(20px,env(safe-area-inset-bottom,0px));transform:none;width:auto}
+  .stage.open .steps{min-height:13em}
+  h1.xl{font-size:60px}
+  .stage.open .ill{top:52px;bottom:auto}
+}
 
-    <div id="visual-container"></div>
+/* ---- v3: laws ---- */
+.stage.lawsx{grid-template-columns:minmax(0,1fr);padding:0}
+.stage.lawsx .viz{position:absolute;inset:0;max-height:none}
+.lawcopy{position:absolute;left:max(24px,6vw);top:50%;width:min(32rem,calc(100% - 48px));display:grid;gap:14px;opacity:0;
+  transform:translate(calc(50vw - max(24px,6vw) - 50%),-50%);transition:transform .9s cubic-bezier(.65,0,.25,1),opacity .6s;text-align:center;justify-items:center}
+.lawcopy.on{opacity:1}
+.lawcopy.left{transform:translate(0,-50%);text-align:left;justify-items:start}
+.lawcopy p{max-width:40ch}
+.gavels{position:absolute;right:max(24px,4vw);top:50%;transform:translateY(-50%);width:min(40rem,50vw);list-style:none;margin:0;padding:0;display:grid;gap:clamp(6px,1.6vh,18px)}
+.gavels li{display:grid;grid-template-columns:clamp(110px,11vw,160px) minmax(0,1fr);gap:18px;align-items:center;opacity:0;transform:translateX(40px);transition:opacity .5s,transform .6s cubic-bezier(.2,.9,.3,1)}
+.gavels li.on{opacity:1;transform:none}
+.gavels canvas{width:100%;aspect-ratio:4/3;display:block}
+.gavels li>div{display:grid;gap:3px;border-top:1px solid var(--grey-1);padding-top:8px}
+.gavels .d{font-family:var(--display);font-weight:800;font-stretch:75%;font-size:clamp(26px,2.4vw,36px);line-height:.9;color:var(--paper)}
+.gavels .h{font-weight:600;font-size:17px;line-height:1.25;color:var(--paper)}
+.gavels .s{font-size:13px;line-height:1.4;color:var(--grey-3)}
+.gavels .vv .d,.gavels .vv .h{color:var(--red)}
+@media (max-width:760px){
+  .lawcopy{top:44%;}
+  .lawcopy.left{top:62px;transform:none}
+  .lawcopy.left p{display:none}
+  .gavels{left:16px;right:16px;width:auto;top:150px;transform:none;gap:14px}
+  .gavels li{grid-template-columns:78px minmax(0,1fr);gap:10px}
+  .gavels .h{font-size:14px}.gavels .s{display:none}.gavels .d{font-size:22px}
+}
 
-</section>
+/* ---- v3: photo scenes, text set straight on the image ---- */
+.stage.photo .viz::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to top,rgba(11,11,11,.96) 0%,rgba(11,11,11,.72) 26%,rgba(11,11,11,0) 58%),linear-gradient(to right,rgba(11,11,11,.78) 0%,rgba(11,11,11,0) 52%)}
+.stage.photo:has(.copy.r) .viz::after{background:linear-gradient(to top,rgba(11,11,11,.96) 0%,rgba(11,11,11,.72) 26%,rgba(11,11,11,0) 58%),linear-gradient(to left,rgba(11,11,11,.78) 0%,rgba(11,11,11,0) 52%)}
+.stage.photo .copy{background:none;border:0;padding:0;width:min(31rem,calc(100% - 32px));max-width:none;left:max(24px,5vw);bottom:max(40px,7vh);gap:12px}
+.stage.photo .copy.r{right:max(24px,5vw)}
+.stage.photo .copy .eyebrow{color:var(--red);display:flex;align-items:center;gap:10px}
+.stage.photo .copy .eyebrow b{display:none}
+.stage.photo .copy .eyebrow::before{content:"";width:34px;height:2px;background:var(--red)}
+.stage.photo .copy p{font-size:18px;line-height:1.5;color:#cfcfcb;max-width:34ch}
+.stage.photo .copy p strong:first-child{display:block;font-weight:700;font-stretch:88%;font-size:clamp(28px,2.7vw,42px);line-height:1.04;letter-spacing:-.015em;color:var(--paper);margin-bottom:10px;text-wrap:balance}
+.stage.photo .copy>*:not(.steps),.stage.photo .copy .st>*{opacity:0;transform:translateY(22px);transition:opacity .6s,transform .7s cubic-bezier(.2,.8,.2,1)}
+.stage.photo .copy.in>*:not(.steps),.stage.photo .copy .st.on>*{opacity:1;transform:none}
+.stage.photo .copy>*:nth-child(2),.stage.photo .copy .st>*:nth-child(2){transition-delay:.12s}
+.stage.photo .copy>*:nth-child(3),.stage.photo .copy .st>*:nth-child(3){transition-delay:.24s}
+.stage.photo .copy .big{font-size:clamp(56px,6vw,96px)}
+@media (max-width:760px){.stage.photo .copy{left:16px;right:16px;width:auto;bottom:28px}.stage.photo .copy p{font-size:15px}.stage.photo .copy p strong:first-child{font-size:25px}.stage.photo .viz::after{background:linear-gradient(to top,rgba(11,11,11,.97) 0%,rgba(11,11,11,.8) 40%,rgba(11,11,11,0) 70%)}}
 
+.stage.banner .viz::after{background:linear-gradient(to top,rgba(11,11,11,.85) 0%,rgba(11,11,11,0) 22%)!important}
+.stage.banner .copy.bq{bottom:max(24px,4vh);opacity:0;transition:opacity .6s}
+.stage.banner .copy.bq.on{opacity:1}
+.stage.banner .poet{font:400 13px/1.5 var(--mono);color:var(--grey-3,#B9B9B9);max-width:60ch;margin:0}
+/* ---- type system v3: Palette Mosaic headlines, Bricolage Grotesque for everything else ---- */
+:root{--mosaic:"Palette Mosaic","Bricolage Grotesque",Impact,sans-serif}
+body{font-family:var(--body);font-size:18px;line-height:1.5;font-optical-sizing:auto;letter-spacing:-.003em}
+p{max-width:38ch}
+p strong{font-weight:650}
+/* Palette Mosaic: its word space is huge, so pull it in until headlines read like sentences */
+h1,h2{font-family:var(--mosaic);font-weight:400;text-transform:uppercase;line-height:1.04;letter-spacing:0;word-spacing:-.48em;text-wrap:balance}
+h1{font-size:clamp(46px,6.4vw,104px)}
+h2{font-size:clamp(30px,3.6vw,56px)}
+.card h2{font-size:clamp(38px,5.6vw,88px)}
+.end h2{font-size:clamp(30px,3.6vw,52px)}
+@media (max-width:760px){h1{font-size:40px}h2{font-size:27px}.card h2{font-size:34px}}
+/* digits never use Mosaic (its numerals read badly); they use the condensed grotesque */
+.dg{font-family:var(--display);font-weight:800;font-stretch:75%;font-size:1.06em;line-height:.9;letter-spacing:-.02em;word-spacing:normal}
+/* labels: small caps of the grotesque instead of a monospace */
+.eyebrow{font:600 12px/1.2 var(--body);letter-spacing:.12em}
+.unit,.cred,.lbl,.legend,.chip,.fn,.ill,.keys,.chap,.tip,.law .s,.cell .t small,.people figcaption,.fort .layer span{font-family:var(--body)}
+.unit{font-weight:500;font-size:12px;letter-spacing:.06em;line-height:1.35}
+.cred{font-size:12px;line-height:1.45}
+.chap{font-weight:600;font-size:11px}
+/* numbers: condensed heavy grotesque, smaller than before */
+.big,.stats .n,.month,.card .num,.law .d,.split .n{font-family:var(--display);font-weight:800;font-stretch:75%;letter-spacing:-.015em;font-variant-numeric:tabular-nums lining-nums}
+.big{font-size:clamp(46px,6vw,92px);line-height:.88}
+.stats .n{font-size:clamp(28px,3vw,42px);line-height:.95}
+.month{font-size:clamp(34px,4.4vw,64px);line-height:.95}
+.card .num{font-size:clamp(80px,13vw,190px)}
+.split .n{font-size:clamp(24px,2.6vw,34px)}
+.q .en{font-family:var(--body);font-weight:600;font-stretch:80%;text-transform:none;letter-spacing:-.01em}
+.lbl{font-weight:600;font-size:11px;letter-spacing:.07em}
+.lbl.big{font:800 22px/1 var(--display);font-stretch:75%}
+@media (max-width:760px){.stats .n{font-size:26px}.big{font-size:44px}.month{font-size:32px}body{font-size:16px}}
+</style>
+<div class="grain" id="grain" aria-hidden="true"></div>
+<div class="bar" id="bar" aria-hidden="true"></div>
+<div class="chap" id="chap">Prologue</div>
+<div class="keys" aria-hidden="true">← → scene by scene</div>
+<div class="tip" id="tip" role="status"></div>
 
-    <!-- =======================================
-         STORY
-    ======================================== -->
-
-    <main id="story">
-
-        <!-- ===============================
-             INTRO
-        ================================ -->
-
-        <section class="scene intro-scene" id="scene-intro">
-
-            <div class="hero">
-
-                <p class="eyebrow">
-                    2020 — 2026
-                </p>
-
-                <h1 class="hero-title">
-
-    <span class="line">
-        When the World
-    </span>
-
-    <br>
-
-    <span class="line">
-        Takes to the
-    </span>
-
-    <br>
-
-    <span class="line red">
-        Streets
-    </span>
-
-</h1>
-
-                <p class="body intro-body">
-    Every protest begins with one <span class="accent">voice</span>
-    <span class="divider">•</span>
-    Some become <span class="accent">movements</span>
-    <span class="divider">•</span>
-    Some change <span class="accent">history</span>.
-</p>
-
-<p class="scroll-indicator">
-
-    Scroll to explore
-
-    <span>↓</span>
-
-</p>
-
-            </div>
-
-        </section>
-
-
-        <!-- ===============================
-             MAP
-        ================================ -->
-
-        <section class="scene split-scene" id="scene-map">
-
-            <div class="story-panel">
-
-                <p class="step">
-                    01
-                </p>
-
-                <h2>
-
-                    Where are protests
-
-                    <span class="red">happening?</span>
-
-                </h2>
-
-                <p>
-
-                    Between 2020 and 2026, more than
-                    <span class="red">117 major protests</span>
-                    took place across the world.
-
-                    Each red dot represents one protest.
-
-                    Hover over a dot to learn more.
-
-                </p>
-
-            </div>
-
-            <div class="graphic-space"></div>
-
-        </section>
-
-
-        <!-- ===============================
-             MOTIVATION
-        ================================ -->
-<!-- ===============================
-     MOTIVATION
-================================ -->
-
-<section class="scene split-scene" id="scene-motivation">
-
-    <div class="story-panel">
-
-        <p class="step">
-            02
-        </p>
-
-        <h2>
-
-            Why do people
-
-            <span class="red">protest?</span>
-
-        </h2>
-
-        <p>
-
-            Although every movement is unique,
-            many protests emerge from recurring
-            motivations such as political freedom,
-            labour rights, agriculture and
-            economic justice.
-
-        </p>
-
+<!-- ===================== PROLOGUE ===================== -->
+<section class="scene" id="sq" style="height:320vh" data-label="Prologue">
+  <div class="stage photo banner">
+    <div class="viz"><canvas id="cq" lang="pa" aria-label="A crowd at night holds up a protest banner, drawn in dots. Its words appear in red, line by line: ਸਭ ਤੋਂ ਖ਼ਤਰਨਾਕ ਹੁੰਦਾ ਹੈ, ਸਾਡੇ ਸੁਪਨਿਆਂ ਦਾ ਮਰ ਜਾਣਾ. Then they turn into English: The most dangerous thing is the death of our dreams."></canvas></div>
+    <div class="copy bq" id="qcap">
+      <div class="eyebrow"><b>●</b> Prologue</div>
+      <p class="poet">Pash (Avtar Singh Sandhu, 1950–1988), from his Punjabi poem <span lang="pa">ਸਭ ਤੋਂ ਖ਼ਤਰਨਾਕ</span>, <em>The Most Dangerous</em>. English translation for this project.</p>
     </div>
-
-
-    <div class="graphic-space"></div>
-
-
+    <div class="ill">Banner · AI-generated illustration</div>
+  </div>
 </section>
-       
 
-
-        <!-- ===============================
-             SUCCESS
-        ================================ -->
-
-        <section class="scene split-scene" id="scene-success">
-
-            <div class="story-panel">
-
-                <p class="step">
-                    03
-                </p>
-
-                <h2>
-
-                    Does a larger crowd
-
-                    <span class="red">mean success?</span>
-
-                </h2>
-
-                <p>
-
-                    Larger crowds don't always lead to
-                    successful outcomes.
-
-                    This chart compares estimated crowd
-                    size with the success score assigned
-                    to each protest.
-
-                </p>
-
-            </div>
-
-            <div class="graphic-space"></div>
-
-        </section>
-<!-- ===============================
-     CASE STUDY
-================================ -->
-
-<section class="scene case-scene" id="scene-case">
-
-    <div class="case-story">
-
-
-        <p class="step">
-            04
-        </p>
-
-
-        <h2>
-            Sri Lanka
-            <span class="red">
-                The Movement That Changed Power
-            </span>
-        </h2>
-
-
-        <p>
-            In 2022, Sri Lanka faced its worst economic
-            crisis since independence.
-
-            Fuel shortages, rising prices and daily
-            struggles pushed citizens into the streets.
-        </p>
-
-
-        <div class="case-block">
-
-            <img src="assets/flag.png">
-
-            <h3>
-                A Crisis Before A Revolution
-            </h3>
-
-            <p>
-                The movement began with everyday struggles.
-                Shortages and rising costs transformed
-                frustration into collective action.
-            </p>
-
-        </div>
-
-
-        <div class="case-block">
-
-            <img src="assets/crisis.png">
-
-            <h3>
-                When People Became The Movement
-            </h3>
-
-            <p>
-                Citizens from different backgrounds
-                gathered at Galle Face Green,
-                creating a shared space of resistance.
-            </p>
-
-        </div>
-
-
-        <div class="case-block">
-
-            <img src="assets/crowd.png">
-
-            <h3>
-                Pressure Reached Power
-            </h3>
-
-            <p>
-                Public pressure reached the centre
-                of political authority.
-            </p>
-
-        </div>
-
-
-        <div class="case-block">
-
-            <img src="assets/outcome.png">
-
-            <h3>
-                A Political Shift
-            </h3>
-
-            <p>
-                President Gotabaya Rajapaksa resigned
-                after months of sustained protests.
-            </p>
-
-        </div>
-
-
+<!-- ===================== SCENE 0 ===================== -->
+<section class="scene" id="s0" style="height:420vh" data-label="One voice">
+  <div class="stage open">
+    <div class="viz"><canvas id="c0" aria-label="A halftone portrait of a farmer shrinks into one small red figure seen from above; then a red crowd walks in and circles him"></canvas></div>
+    <div class="copy">
+      <div class="steps" data-steps="0,.3,.6">
+        <div class="st"><div class="eyebrow"><b>●</b> A visual story in data</div><h1>One voice<br>to a <em>movement</em></h1><p><strong>Every protest begins the same way.</strong> Somebody decides they will not stay silent.</p><p class="cred">Scroll, or use the arrow keys.</p></div>
+        <div class="st"><div class="lead">It starts with</div><h1 class="xl"><span class="o">O</span>ne<br>v<span class="o">o</span>ice</h1><p>Most voices fade. A few are joined by another, and another.</p></div>
+        <div class="st"><div class="lead">and becomes</div><h1 class="xl">A <em>movement</em></h1><p><strong>This one began with a region.</strong> In 2020, the villages of Punjab spoke up together against three farm laws. Their voice became a country's.</p><p>First, the world it belongs to.</p></div>
+      </div>
     </div>
-
+    <div class="ill">A02 · representative farmer · AI-generated illustration</div>
+  </div>
 </section>
 
-<section class="scene split-scene" id="scene-ending">
-
-    <div class="story-panel">
-
-        <p class="step">
-            05
-        </p>
-
-
-        <h2>
-            What makes a protest
-            <span class="red">successful?</span>
-        </h2>
-
-
-        <p>
-            Success is not defined by the size
-            of the crowd.
-
-            It comes from the strength
-            of the movement.
-        </p>
-
-
+<!-- ===================== ACTS 1–2: WORLD ===================== -->
+<section class="scene" id="sw" style="height:760vh" data-label="Act 1 · The world in the streets">
+  <div class="stage">
+    <div class="copy">
+      <div class="eyebrow" id="weye"><b>●</b> Mass protests, 2020–2025</div>
+      <div class="steps" data-steps="0,.22,.42,.62,.82">
+        <div class="st"><h2>The world in <em>the streets</em></h2><p>Between 2020 and 2025, <strong>151 mass protests</strong> shook <strong>67 countries</strong>. Each red dot is one of them: at least 10,000 people, and either a week or more on the streets or a change it forced.</p><div class="big red" id="wyear">2020</div></div>
+        <div class="st"><h2>They come in <em>waves</em></h2><p>Every grey dot is a protest the tracker recorded; red ones made our list. Protests rose after the pandemic years. In <strong>2022</strong>, as prices soared, protests about money <strong>tripled</strong>: 74 that year against 22 the year before.</p></div>
+        <div class="st"><h2>Why people <em>rise</em></h2><p>Nine in ten are <strong>political</strong>: about who holds power and how it is used. One in three is about <strong>money</strong>. Many are about both. Hollow dots are protests counted again under a second reason.</p></div>
+        <div class="st"><h2>Does a bigger crowd <em>win</em>?</h2><p>Not in this data. About <strong>half</strong> of the protests forced a change in policy or leadership, at every size. Length does not decide it either: dot size is how long each lasted.</p><p><strong>Numbers alone don't explain why a protest wins.</strong> To see what does, we have to look inside one.</p></div>
+        <div class="st"><h2>One dot in <em>north India</em></h2><p>The farm law protests, India, 2020–21. More than a million people at its peak, over sixteen months. Inside this one dot is a whole movement.</p></div>
+      </div>
+      <div class="legend hide-s" id="wleg"></div>
     </div>
-
-
-    <div class="graphic-space"></div>
-
-
+    <div class="viz"><canvas id="cw" aria-label="151 mass protests on a world map, then by date, by reason and by size against outcome"></canvas></div>
+  </div>
 </section>
 
-        
-    </main>
+<!-- ===================== ACT 3 ===================== -->
+<section class="card" data-label="Act 3 · The farmers' protest">
+  <div class="eyebrow"><b>●</b> Act 3 · the case study</div>
+  <div class="num">378</div>
+  <h2>days at the gates <em>of Delhi</em></h2>
+  <p>The Indian farmers' protest, September 2020 to December 2021: how three laws met a region that would not go home.</p>
+</section>
 
-</div>
+<section class="card" data-label="Chapter 1 · The laws">
+  <div class="eyebrow"><b>●</b> Chapter 1</div>
+  <h2>The <em>laws</em></h2>
+</section>
 
+<!-- Scene 5 -->
+<section class="scene" id="sland" style="height:300vh" data-label="Ch 1 · The land">
+  <div class="stage">
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> Who lives off the land</div>
+      <h2>A safety net for <em>a few</em></h2>
+      <p>Most Indian farmers work a few acres. Their safety net is a promise: the government will buy wheat and rice at a <strong>minimum support price</strong> (MSP). But only a small share ever sell at that price, many of them in Punjab and Haryana.</p>
+      <p class="cred">Each square is 1 in 100. Context sheet: Al Jazeera (2021); Agriculture Census 2015–16.</p>
+    </div>
+    <div class="viz"><svg id="vland" role="img" aria-label="Three waffle charts of 100 squares"></svg></div>
+  </div>
+</section>
 
-<script src="https://d3js.org/d3.v7.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<!-- Scene 6 -->
+<section class="scene" id="slaws" style="height:520vh" data-label="Ch 1 · Three laws">
+  <div class="stage lawsx">
+    <div class="viz"><canvas id="claws" aria-label="Farmers walk through a field of giant cream gavels on red ground"></canvas></div>
+    <div class="lawcopy" id="lawcopy">
+      <div class="eyebrow"><b>●</b> June to September 2020</div>
+      <h2>Three laws, <em>in a hurry</em></h2>
+      <p>In the middle of a pandemic, the government issues three ordinances to change how crops are bought and sold. In September, Parliament makes them law. In the Rajya Sabha, the vote is <strong>by voice, with no count</strong>.</p>
+      <p>The government calls it freedom for farmers. Farmers call it the end of their safety net.</p>
+    </div>
+    <ol class="gavels" id="gavels">
+      <li><canvas></canvas><div><span class="d">June</span><span class="h">Three ordinances, issued without Parliament</span><span class="s">Sell outside government markets · contract farming · fewer stock limits</span></div></li>
+      <li><canvas></canvas><div><span class="d">17 Sep</span><span class="h">Lok Sabha passes the bills</span><span class="s">The same day, food processing minister Harsimrat Kaur Badal resigns, calling them anti-farmer</span></div></li>
+      <li class="vv"><canvas></canvas><div><span class="d">20 Sep</span><span class="h">Rajya Sabha: passed by voice vote</span><span class="s">No division, no recorded count</span></div></li>
+      <li><canvas></canvas><div><span class="d">28 Sep</span><span class="h">The President signs. The bills become acts.</span><span class="s">Farmers' Produce Trade · Price Assurance · Essential Commodities (Amendment)</span></div></li>
+    </ol>
+  </div>
+</section>
 
-<script src="js/map.js"></script>
-<script src="js/motivation.js"></script>
-<script src="js/success.js"></script>
-<script src="js/caseStudy.js"></script>
-<script src="js/introParticles.js"></script>
-<script src="js/main.js"></script>
+<section class="card" data-label="Chapter 2 · Punjab speaks first">
+  <div class="eyebrow"><b>●</b> Chapter 2</div>
+  <h2>Punjab speaks <em>first</em></h2>
+</section>
 
-</body>
-</html>
+<!-- Scene 7–8: photo A03 -->
+<section class="scene" id="pa03" style="height:260vh" data-label="Ch 2 · The first voices">
+  <div class="stage photo">
+    <div class="viz"><canvas id="ca03" aria-label="Halftone illustration: farmers gathered under union flags in a Punjab village"></canvas></div>
+    <div class="copy">
+      <div class="steps" data-steps="0,.5">
+        <div class="st"><div class="eyebrow"><b>●</b> August 2020</div><p><strong>It starts small.</strong> In village squares across Punjab, unions gather a few hundred at a time. Of the 30 protests recorded against the ordinances that month, <strong>17 are in Punjab</strong>. Nobody in Delhi is listening yet.</p></div>
+        <div class="st"><div class="eyebrow"><b>●</b> 24 September 2020</div><p><strong>Rail roko.</strong> Farmers sit on the railway tracks across Punjab, and trains stop. The next day, the unions call a nationwide strike. On 14 October, the first round of talks: farmers meet officials, not ministers, and <strong>walk out</strong>.</p></div>
+      </div>
+    </div>
+    <div class="ill">A03 · AI-generated illustration</div>
+  </div>
+</section>
+
+<section class="card" data-label="Chapter 3 · The march on Delhi">
+  <div class="eyebrow"><b>●</b> Chapter 3</div>
+  <h2>The march <em>on Delhi</em></h2>
+</section>
+
+<section class="scene" id="pa04" style="height:220vh" data-label="Ch 3 · Dilli Chalo">
+  <div class="stage photo">
+    <div class="viz"><canvas id="ca04" aria-label="Halftone illustration: a long convoy of tractor trolleys on a highway"></canvas></div>
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> 25–26 November 2020</div>
+      <p><strong>Dilli Chalo: “Let's go to Delhi.”</strong> Tens of thousands of farmers set out on tractors, their trolleys packed with rations for months.</p>
+    </div>
+    <div class="ill">A04 · AI-generated illustration</div>
+  </div>
+</section>
+
+<!-- Scene 9–10: march map -->
+<section class="scene" id="smarch" style="height:460vh" data-label="Ch 3 · They stop, and stay">
+  <div class="stage">
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> From Punjab and Haryana to Delhi's borders</div>
+      <div class="steps" data-steps="0,.3,.62">
+        <div class="st"><h2>The roads <em>to Delhi</em></h2><p>From the villages that protested first, the convoys head south down the highways towards the capital.</p></div>
+        <div class="st"><h2>Met with <em>barricades</em></h2><p>At the Haryana border they meet <strong>tear gas, water cannons, dug-up highways</strong>, and layers of barricades and sand-filled trucks. A young farmer climbs onto a water cannon and turns it off. He is charged with <strong>attempted murder</strong>.</p></div>
+        <div class="st"><h2>They stop, <em>and stay</em></h2><p>They stop where the highways meet Delhi: <strong>Singhu, Tikri</strong> and <strong>Ghazipur</strong>. And they sit down. Within a week, between</p><div class="big red" style="font-size:clamp(44px,6vw,84px)">150,000–<br>300,000</div><div class="unit">people at Delhi's borders, 28 Nov to 3 Dec 2020 (media estimates). A range, not a count.</div></div>
+      </div>
+    </div>
+    <div class="viz"><canvas id="cmarch" aria-label="Map of north India: red streams flow from Punjab to three camps at Delhi's borders"></canvas></div>
+  </div>
+</section>
+
+<section class="scene" id="pa05" style="height:220vh" data-label="Ch 3 · Water cannons">
+  <div class="stage photo">
+    <div class="viz"><canvas id="ca05" aria-label="Halftone illustration: farmers behind concrete barriers as a water cannon sprays"></canvas></div>
+    <div class="copy r">
+      <div class="eyebrow"><b>●</b> November 2020</div>
+      <p><strong>Water cannons in the cold.</strong> The first answer from power was to stop the road. It did not stop the people.</p>
+    </div>
+    <div class="ill">A05 · AI-generated illustration</div>
+  </div>
+</section>
+
+<section class="card" data-label="Chapter 4 · A city on the highway">
+  <div class="eyebrow"><b>●</b> Chapter 4</div>
+  <h2>A city on <em>the highway</em></h2>
+  <p>How it was organised, and who held the line. This is where a crowd becomes a society.</p>
+</section>
+
+<section class="scene" id="pa06" style="height:220vh" data-label="Ch 4 · Nobody goes hungry">
+  <div class="stage photo">
+    <div class="viz"><canvas id="ca06" aria-label="Halftone illustration: a langar, a free community kitchen, serving people seated on the road"></canvas></div>
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> The langar</div>
+      <p><strong>The first thing they build is a kitchen.</strong> Langars, the Sikh tradition of free community kitchens, run day and night. Gurdwara committees, Khalsa Aid, students and the Muslim Federation of Punjab cook side by side. Anyone who comes is fed.</p>
+    </div>
+    <div class="ill">A06 · AI-generated illustration</div>
+  </div>
+</section>
+
+<!-- Scene 12 camp -->
+<section class="scene" id="scamp" style="height:320vh" data-label="Ch 4 · Homes on wheels">
+  <div class="stage">
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> Singhu, Tikri, Ghazipur</div>
+      <h2>The highway becomes <em>a town</em></h2>
+      <p>Tractor trolleys become bedrooms. Tarpaulins become roofs. Then come <strong>solar phone chargers, laundries, libraries, clinics, dentists</strong>, schools for the children, and a newspaper: <strong>Trolley Times</strong>.</p>
+      <p class="cred">Camp_infrastructure sheet: each pin is a service the camps ran themselves, in the order our walk meets them (the order is ours, not a timeline). The walking farmer is a detail from the chapter 1 illustration.</p>
+    </div>
+    <div class="viz"><svg id="vcamp" role="img" aria-label="A farmer walks up the highway towards Delhi; as he passes, trolleys and tents fill the roadside and twelve camp services appear one by one"></svg></div>
+  </div>
+</section>
+
+<!-- Scene 13 org -->
+<section class="scene" id="sorg" style="height:320vh" data-label="Ch 4 · Who runs it">
+  <div class="stage">
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> No single leader</div>
+      <h2>Who runs a city <em>of protest?</em></h2>
+      <p>Dozens of unions, from Punjab to Karnataka, join under one banner: the <strong>Samyukt Kisan Morcha</strong> (SKM, the United Farmers' Front). They decide together and speak from one stage. In December they set up an <strong>IT cell</strong> to fight misinformation, and put up their own <strong>CCTV cameras</strong>.</p>
+      <p class="cred">About 40 unions sat at the talks (Frontline, Dec 2020; DW, Sep 2021); at least 32 were from Punjab (India Today, 19 Nov 2021). Named where news reports name them (Times of India, 10 Dec 2020; The Hindu, 25 Dec 2021). Figures are illustrations, not real people.</p>
+    </div>
+    <div class="viz"><svg id="vorg" role="img" aria-label="Illustration: rows of farmers in turbans, one figure per union. Hover or tap a figure for its union"></svg></div>
+  </div>
+</section>
+
+<section class="scene" id="pa08" style="height:240vh" data-label="Ch 4 · The women">
+  <div class="stage photo">
+    <div class="viz"><canvas id="ca08" aria-label="Halftone illustration: three older women wrapped in shawls on a tractor trolley"></canvas></div>
+    <div class="copy r">
+      <div class="eyebrow"><b>●</b> 18 January 2021 · Mahila Kisan Diwas</div>
+      <p><strong>Women ran the farms back home</strong> while the men camped at the borders. Then many of them came too. They cooked, they spoke, they stood guard. On Women Farmers' Day, women ran the stages at every site. <strong>We are farmers too.</strong></p>
+    </div>
+    <div class="ill">A08 · AI-generated illustration</div>
+  </div>
+</section>
+
+<!-- Scene 15 people -->
+<section class="scene" id="speople" style="height:300vh" data-label="Ch 4 · Everyone else who came">
+  <div class="stage">
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> Who joined</div>
+      <h2>Everyone else <em>who came</em></h2>
+      <p>A movement is a crowd that is <strong>different from itself</strong>. Old and young, landowners and landless labourers, Sikh, Hindu and Muslim, at home and abroad.</p>
+      <p class="cred">Participation_groups sheet. Figures are illustrations, not real people.</p>
+    </div>
+    <div class="viz" style="display:grid;align-content:center"><div class="people" id="people"></div><div class="others" id="others"></div></div>
+  </div>
+</section>
+
+<!-- Scene 16 precautions -->
+<section class="scene" id="ssafe" style="height:300vh" data-label="Ch 4 · Staying peaceful">
+  <div class="stage">
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> Discipline as strategy</div>
+      <h2>Staying safe, <em>staying peaceful</em></h2>
+      <p>The unions knew one violent image could end it. So they built rules, and a ring of care around the camps. Even their nationwide strike ran only <strong>from 11 am to 3 pm</strong>, so ordinary people would not suffer.</p>
+      <p class="cred">Each ring is one month: August 2020 at the centre, December 2021 at the bark. A ring is wider when more protest events were recorded that month (ACLED). Red wood shows the months each precaution was in place (precautions sheet, each checked against a news report). Medical camps and village shifts are dated from the start of the border camps.</p>
+    </div>
+    <div class="viz"><canvas id="csafe" role="img" aria-label="A cut tree trunk. Each ring is one month from August 2020 at the centre to December 2021 at the bark; thicker rings are months with more protest events. Seven wedges, one per precaution, are stained red in the months it was in place."></canvas></div>
+  </div>
+</section>
+
+<section class="card" data-label="Chapter 5 · Talking to power">
+  <div class="eyebrow"><b>●</b> Chapter 5</div>
+  <h2>Talking <em>to power</em></h2>
+</section>
+
+<section class="scene" id="pa10" style="height:220vh" data-label="Ch 5 · Their own food">
+  <div class="stage photo">
+    <div class="viz"><canvas id="ca10" aria-label="Halftone illustration: farmers eating their own food at a long government conference table"></canvas></div>
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> Vigyan Bhavan, New Delhi</div>
+      <p><strong>Eleven rounds of talks.</strong> On 3 December, at the table, the farmers refuse the government's lunch and tea, and eat food brought from their own langar.</p>
+    </div>
+    <div class="ill">A10 · AI-generated illustration</div>
+  </div>
+</section>
+
+<!-- Scene 17–18 talks -->
+<section class="scene" id="stalks" style="height:420vh" data-label="Ch 5 · Eleven rounds">
+  <div class="stage">
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> October 2020 to January 2021</div>
+      <h2>Closer, <em>never there</em></h2>
+      <div class="steps" data-steps="0,.3,.55,.78">
+        <div class="st"><p>The farmers' demand never moves: <strong>repeal</strong>. Each spoke is one round of talks; the further it reaches, the more the government offered. The red ring is repeal.</p></div>
+        <div class="st"><p><strong>9 December:</strong> a written offer of amendments and an assurance on MSP. Rejected. <strong>30 December:</strong> the government gives way on stubble-burning fines and the electricity bill. Two demands won; the farmers stay for the rest.</p></div>
+        <div class="st"><p><strong>12 January 2021:</strong> the Supreme Court suspends the three laws and appoints a committee. The farmers say they will not appear before it. <strong>The camps stay.</strong></p></div>
+        <div class="st"><p><strong>20 January:</strong> an offer to freeze the laws for 18 months. Rejected. On 22 January, round 11 ends with no date for another.</p></div>
+      </div>
+      <div class="unit">Hover or tap a spoke for that round. Spoke length is our reading of how far each offer went towards repeal. Dashed: the Supreme Court, not the government. Hollow tips: offers outside a round.</div>
+    </div>
+    <div class="viz"><svg id="vtalks" role="img" aria-label="Radial calendar from October 2020 to January 2021: one spoke per round of talks, growing longer as offers improve, never reaching the red ring of repeal"></svg></div>
+  </div>
+</section>
+
+<section class="card" data-label="Chapter 6 · Pressure and crackdown">
+  <div class="eyebrow"><b>●</b> Chapter 6</div>
+  <h2>Pressure <em>and crackdown</em></h2>
+</section>
+
+<!-- Scene 19 winter -->
+<section class="scene" id="swinter" style="height:280vh" data-label="Ch 6 · Winter">
+  <div class="stage">
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> December 2020</div>
+      <h2><em>Winter</em></h2>
+      <p>Delhi's winter nights fall close to freezing, and the camps are open to the sky. On 21 December, farmer leaders say more than 30 protesters have died, mainly of the cold. The night before, the unions held a day of mourning and counted <strong>41</strong>.</p>
+      <p>On 16 December, a Sikh preacher, Sant Baba Ram Singh, took his own life at Singhu, leaving a note about the farmers' suffering.</p>
+      <div class="stats"><div><span class="n">1.1°C</span><span class="unit">Delhi, 1 Jan 2021</span></div><div><span class="n red">41</span><span class="unit">deaths counted by 20 Dec</span></div><div><span class="n">95</span><span class="unit">winter nights camped, 26 Nov to 28 Feb</span></div></div>
+      <p class="cred">The peaks are the coldest nights: daily minimum temperature for central Delhi, 26 Nov 2020 to 28 Feb 2021 (Open-Meteo historical weather API, ERA5 model). The official 1.1°C low was recorded at Safdarjung by IMD (India Today, 1 Jan 2021).</p>
+    </div>
+    <div class="viz"><canvas id="cwinter" aria-label="A mountain range of white dots: the taller the peak, the colder the night in Delhi that winter. The highest peak is 1 January 2021, when Delhi fell to 1.1°C."></canvas></div>
+  </div>
+</section>
+
+<!-- Scene 20–21 Republic Day -->
+<section class="scene" id="srday" style="height:420vh" data-label="Ch 6 · Republic Day">
+  <div class="stage">
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> 26 January 2021</div>
+      <div class="steps" data-steps="0,.4,.72">
+        <div class="st"><h2>Republic <em>Day</em></h2><p>Tens of thousands of tractors roll into Delhi for a permitted rally. Some groups break from the agreed routes. A crowd reaches the <strong>Red Fort</strong> and raises a religious flag.</p></div>
+        <div class="st"><h2>The movement <em>shakes</em></h2><p>Police first say 86 officers are injured, then 394. A young farmer dies when his tractor overturns. The internet is cut. Two unions quit the protest. For the first time, it looks like it might break.</p></div>
+        <div class="st"><h2>Tears at <em>Ghazipur</em></h2><p>28 January. Police move to clear the Ghazipur camp; water and electricity are cut. Union leader Rakesh Tikait breaks down on camera. Overnight, farmers from western Uttar Pradesh and Haryana pour back. The movement is alive again.</p></div>
+      </div>
+      <div class="stats"><div><span class="n red" id="rd1">0</span><span class="unit">officers injured (police)</span></div><div><span class="n" id="rd2">0</span><span class="unit">people detained</span></div><div><span class="n" id="rd3">0</span><span class="unit">arrests</span></div></div>
+    </div>
+    <div class="viz"><canvas id="crday" aria-label="The Red Fort; tractor estimates as rows of tractor icons; then red dots pour into a teardrop shape at Ghazipur"></canvas></div>
+  </div>
+</section>
+
+<!-- Scene 22 fortress -->
+<section class="scene" id="sfort" style="height:380vh" data-label="Ch 6 · The fortress">
+  <div class="stage">
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> From 29 January 2021</div>
+      <div class="steps" data-steps="0,.45,.72">
+        <div class="st"><h2>The <em>fortress</em></h2><p>The government answers with concrete. Trenches, cement walls, rows of iron nails and coils of wire are laid across the highways. Water and power are cut at Ghazipur. A journalist is arrested at Singhu.</p></div>
+        <div class="st"><h2>Names for <em>the protesters</em></h2><p>Ministers and party leaders call them anti-nationals, Khalistanis, urban naxals, foreign-backed. Twitter, on government orders, removes more than 500 accounts.</p></div>
+        <div class="st"><h2>The world <em>notices</em></h2><p><strong>2 February:</strong> Rihanna tweets about the protest. Greta Thunberg follows. The Foreign Ministry replies with hashtags: <strong>#IndiaTogether</strong>. Sikh farmers in California pay for a 30-second Super Bowl ad.</p></div>
+      </div>
+    </div>
+    <div class="viz"><div class="fort" id="fort"></div><div class="words" id="words"></div></div>
+  </div>
+</section>
+
+<section class="scene" id="pa14" style="height:240vh" data-label="Ch 6 · Spreading out">
+  <div class="stage photo">
+    <div class="viz"><canvas id="ca14" aria-label="Halftone illustration: a huge crowd in a field with flags, a mahapanchayat"></canvas></div>
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> 5 September 2021 · Muzaffarnagar</div>
+      <p><strong>Blocked at Delhi, the movement goes home and grows.</strong> Mahapanchayats, huge village assemblies, fill fields across Haryana, Uttar Pradesh and Rajasthan. At Muzaffarnagar, more than</p>
+      <div class="big red" style="font-size:clamp(48px,7vw,96px)">500,000</div><div class="unit">people at a single rally</div>
+    </div>
+    <div class="ill">A14 · AI-generated illustration</div>
+  </div>
+</section>
+
+<!-- Scene 23 spread map -->
+<section class="scene" id="s1" style="height:520vh" data-label="Ch 6 · Where it spread">
+  <div class="stage">
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> Where the protests happened, month by month</div>
+      <h2><span class="dg">23</span> districts to <em class="dg">543</em></h2>
+      <div class="month" id="m1">Aug 2020</div>
+      <p class="note" id="n1"></p>
+      <div class="stats">
+        <div><span class="n" id="d1">0</span><span class="unit">districts so far</span></div>
+        <div><span class="n" id="st1">0</span><span class="unit">states and UTs</span></div>
+        <div><span class="n red" id="e1">0</span><span class="unit">events this month</span></div>
+      </div>
+      <div class="legend hide-s"><span><i style="background:var(--red)"></i>protests this month</span><span><i style="background:var(--grey-2)"></i>protested before</span><span><i style="background:var(--grey-1)"></i>none yet</span></div>
+    </div>
+    <div class="viz"><canvas id="c1" aria-label="Halftone map of India; districts light up as protests spread"></canvas></div>
+  </div>
+</section>
+
+<!-- daily strip -->
+<section class="scene" id="s2" style="height:300vh" data-label="Ch 6 · One call">
+  <div class="stage">
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> Every day, 1 Aug 2020 to 31 Dec 2021</div>
+      <h2>One call, <em>hundreds</em> of places</h2>
+      <p>Each column is one day; its height is the number of protest events recorded that day. <strong>The tallest days were not accidents.</strong> Every one was a day the farmers' unions called the whole country out.</p>
+      <div class="stats">
+        <div><span class="n red" id="pk">281</span><span class="unit">events on 27 Sep 2021</span></div>
+        <div><span class="n" id="dy">0</span><span class="unit">days with a protest</span></div>
+        <div><span class="n" id="ev2">0</span><span class="unit">events so far</span></div>
+      </div>
+    </div>
+    <div class="viz"><canvas id="c2" aria-label="Daily count of protest events, with national call days in red"></canvas></div>
+  </div>
+</section>
+
+<!-- Scene 24 cost -->
+<section class="scene" id="scost" style="height:360vh" data-label="Ch 6 · The cost">
+  <div class="stage">
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> Deaths among the protesters</div>
+      <h2>The <em>cost</em></h2>
+      <div class="steps" data-steps="0,.55">
+        <div class="st"><p>Nobody agrees on how many died. The red line is each count as it was reported, and each mark below is one death: <strong>41</strong> by December 2020, <strong>248</strong> by March, <strong>537</strong> by July (SKM), <strong>about 750</strong> by November, and <strong>789</strong> in a later count.</p><p>On 1 December 2021, the government told Parliament it had <strong>no record</strong> of farmers dying in the protest, and so no question of compensation.</p></div>
+        <div class="st"><p><strong>3 October 2021, Lakhimpur Kheri.</strong> A convoy drives into protesting farmers. Eight people die, four of them farmers. A Union minister's son is arrested six days later.</p></div>
+      </div>
+      <div class="unit">Marks in red: Lakhimpur Kheri. Placement in the wall is for illustration.</div>
+    </div>
+    <div class="viz"><canvas id="ccost" aria-label="Step line of the reported death counts over time, above a tally wall of 789 marks"></canvas></div>
+  </div>
+</section>
+
+<section class="card" data-label="Chapter 7 · Victory">
+  <div class="eyebrow"><b>●</b> Chapter 7</div>
+  <h2>Victory, and what was <em>left unfinished</em></h2>
+</section>
+
+<!-- Scene 25 repeal -->
+<section class="scene" id="srepeal" style="height:320vh" data-label="Ch 7 · The U-turn">
+  <div class="stage">
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> 19 November 2021 · Guru Nanak's birthday</div>
+      <h2>The <em>U-turn</em></h2>
+      <p>The Prime Minister speaks to the nation. He apologises, and says the three laws will be repealed. Ten days later Parliament repeals them by voice vote, <strong>without debate</strong>. The same way they were passed.</p>
+      <div class="split"><div><span class="unit">Passed</span><span class="n">20 Sep 2020</span><span class="unit">voice vote</span></div><div><span class="unit">Repealed</span><span class="n" style="color:var(--red)">29 Nov 2021</span><span class="unit">voice vote, no debate</span></div></div>
+    </div>
+    <div class="viz"><canvas id="crepeal" aria-label="The three laws as blocks of grey dots that shatter apart"></canvas></div>
+  </div>
+</section>
+
+<!-- Scene 26 demands -->
+<section class="scene" id="s3" style="height:300vh" data-label="Ch 7 · The demands">
+  <div class="stage">
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> Eleven demands, and what became of them</div>
+      <h2>What they asked for, <em>what they got</em></h2>
+      <p>Victory did not come in one moment. It came in steps, each forced by the movement growing. On <strong>9 December 2021</strong>, a government letter promised a committee on MSP and the withdrawal of cases, and the protest was called off.</p>
+      <p><strong>The laws were repealed. A legal guarantee of crop prices was not.</strong></p>
+      <p class="cred">Ripe red ear: met. Dotted or half-red ear: promised or partly met. Empty ear that wilts: not met. Hover or tap a stalk for the details. Demands sheet; dates are when each was agreed or promised.</p>
+    </div>
+    <div class="viz"><svg id="vdem" role="img" aria-label="Eleven stalks of wheat, one per demand. Two ripen fully (met), five half-ripen (promised or partly met), four stay empty and wilt (not met)"></svg></div>
+  </div>
+</section>
+
+<section class="scene" id="pa15" style="height:260vh" data-label="Ch 7 · Going home">
+  <div class="stage photo">
+    <div class="viz"><canvas id="ca15" aria-label="Halftone illustration: garlanded tractors with flags driving home at sunrise"></canvas></div>
+    <div class="copy">
+      <div class="eyebrow"><b>●</b> 11 December 2021</div>
+      <p><strong>After 378 days, the protest is called off.</strong> Two days later the tractors turn around. They take the tents down, sweep the highway, and drive home to the sound of drums.</p>
+      <p>The laws are gone. <strong>The promise of a guaranteed price is still a promise.</strong> In February 2024, farmers marched again.</p>
+    </div>
+    <div class="ill">A15 · AI-generated illustration</div>
+  </div>
+</section>
+
+<!-- Finale -->
+<section class="card" data-label="Finale">
+  <div class="eyebrow"><b>●</b> Finale</div>
+  <h2>What made it <em>a movement</em></h2>
+</section>
+
+<section class="scene" id="sradar" style="height:360vh" data-label="Finale · How it grew">
+  <div class="stage">
+    <div class="copy">
+      <div class="eyebrow" id="radeye"><b>●</b> Five ways a protest grows</div>
+      <div class="month" id="radm">Aug 2020</div>
+      <p class="note" id="radn"></p>
+      <p>It did not win because it was the biggest. It won because it <strong>lasted</strong>, because it <strong>fed itself</strong>, because women, students, labourers and the diaspora <strong>joined in</strong>, and because it <strong>stayed peaceful</strong> when it was pushed.</p>
+      <p class="cred">Growth index: our own 1–5 scoring of each dimension, built from the other sheets. An estimate, not a measurement.</p>
+    </div>
+    <div class="viz"><svg id="vradar" role="img" aria-label="Five-axis radar: numbers, places, people, organisation, pressure, growing over time"></svg></div>
+  </div>
+</section>
+
+<section class="scene" id="sback" style="height:340vh" data-label="Back to the world">
+  <div class="stage">
+    <div class="copy">
+      <div class="steps" data-steps="0,.45,.8">
+        <div class="st"><div class="eyebrow"><b>●</b> Back to the world</div><h2>Behind <em>every dot</em></h2><p>One village protest became a city. The city became a movement. The movement changed the law.</p></div>
+        <div class="st"><div class="eyebrow"><b>●</b> 151 protests, 2020–2025</div><h2>A story <em>like this one</em></h2><p>Red: <strong>76</strong> forced a change in policy or leadership. Grey: 75 did not, or not yet. Behind every one of these dots is a story like this one.</p></div>
+        <div class="st"><h2>Every one began with <em>one voice</em></h2></div>
+      </div>
+    </div>
+    <div class="viz"><canvas id="cback" aria-label="World map of 151 protests coloured by outcome. The dots gather into one red dot, which becomes a red figure with a soft halo, and a crowd gathers around them"></canvas></div>
+  </div>
+</section>
+
+<section class="end" data-label="Sources">
+  <div class="eyebrow"><b>●</b> About this story</div>
+  <h2>Sources <em>and method</em></h2>
+  <p>Built for the semester project “From One Voice to a Movement”. Every number comes from two workbooks compiled for it. Where sources disagree, the story shows a range. Each fact on the page is backed by at least one news report or official record.</p>
+  <h3>Data</h3>
+  <ul>
+    <li><strong>World:</strong> Carnegie Endowment, Global Protest Tracker. 151 of 821 protests from 2020–2025: peak of at least 10,000 people, and lasting at least a week, still active, or forcing a policy or leadership change. “Changed something” is Carnegie's own outcome note.</li>
+    <li><strong>Protest events in India:</strong> ACLED (acleddata.com), 24,748 India events from Aug 2020 to Dec 2021, filtered by keyword to 5,512 events linked to the farm laws, in 543 districts.</li>
+    <li><strong>The movement:</strong> timeline, talks, police actions, deaths, demands and camp life, compiled mainly from the Al Jazeera and Reuters timeline of the protest, Al Jazeera's reporting of the settlement, PRS Legislative Research, the US Congressional Research Service (R46713), and the news reports cited by Wikipedia's article on the protest. Each row in the workbook carries its source and a confidence level; rows that rest only on Wikipedia are being replaced with the original reports.</li>
+    <li><strong>Opening line:</strong> Pash (Avtar Singh Sandhu), “Sab ton khatarnak”. Text checked against folkpunjab.org and punjabi-kavita.com.</li>
+  </ul>
+  <h3>Images</h3>
+  <p class="fn">All photographs are AI-generated illustrations (assets A02–A15), turned into halftone dots in code. They depict no real person. The map of India follows the official boundary of India as per the Survey of India, from DataMeet's <a href="https://github.com/datameet/maps/tree/master/Country" style="color:inherit">india-composite</a> dataset (CC0), simplified for the screen.</p>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="app.js"></script>
