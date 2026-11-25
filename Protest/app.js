@@ -1411,7 +1411,7 @@ function makeBanner() {
   };
   S.render = (p, tm = 0) => {
     const { ctx, w, h, st } = S; if (!S.cells) return; ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.clearRect(0, 0, w, h);
-    const intro = ease(seg(p, 0, 0.1)), r1 = seg(p, 0.08, 0.26), r2 = seg(p, 0.25, 0.43), dis = seg(p, 0.55, 0.74), echo = seg(p, 0.43, 0.6), sec = tm / 1000;
+    const intro = 1, r1 = seg(p, 0.08, 0.26), r2 = seg(p, 0.25, 0.43), dis = seg(p, 0.55, 0.74), echo = seg(p, 0.43, 0.6), sec = tm / 1000;
     const bins = [[], [], [], []], red = [], glow = [];
     for (const c of S.cells) {
       const rl = seg(p, 0.08 + c.line * 0.35 / S.nl, 0.08 + (c.line + 1) * 0.35 / S.nl), shown = c.u < rl * 1.08, txt = dis > c.r ? c.en : (c.pa && shown);
